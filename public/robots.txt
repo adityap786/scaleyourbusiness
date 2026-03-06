@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /api
+
+# Host
+Host: https://scaleyourbusiness.online
+
+# Sitemaps
+Sitemap: https://scaleyourbusiness.online/sitemap.xml

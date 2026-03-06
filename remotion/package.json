@@ -1,0 +1,20 @@
+{
+  "name": "syb-remotion",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "studio": "remotion studio index.ts",
+    "preview": "remotion preview index.ts",
+    "render": "remotion render index.ts HeroLoop renders/hero-loop.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.425",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.425",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

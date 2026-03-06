@@ -1,0 +1,48 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "install-3d-motion-packages",
+			"type": "shell",
+			"command": "pnpm",
+			"args": [
+				"add",
+				"three@latest",
+				"@react-three/fiber@latest",
+				"@react-three/drei@latest",
+				"@react-three/postprocessing@latest",
+				"@react-spring/three@latest",
+				"maath@latest",
+				"gsap@latest",
+				"remotion@latest",
+				"@remotion/player@latest",
+				"@remotion/three@latest",
+				"@remotion/renderer@latest"
+			]
+		},
+		{
+			"label": "pnpm-install",
+			"type": "shell",
+			"command": "pnpm",
+			"args": [
+				"install"
+			]
+		},
+		{
+			"label": "pnpm-install",
+			"type": "shell",
+			"command": "pnpm install"
+		},
+		{
+			"label": "install-deps",
+			"type": "shell",
+			"command": "pnpm install",
+			"isBackground": false
+		},
+		{
+			"label": "pnpm-i",
+			"type": "shell",
+			"command": "cd /d w:\\scaleyourbusiness && pnpm install"
+		}
+	]
+}

@@ -1,0 +1,104 @@
+"use client"
+
+import { Container } from "@/components/ui/container"
+import { Sparkles } from "lucide-react"
+import { CTASection } from "@/components/home/cta-section"
+import { TechStackCarousel } from "@/components/ui/tech-stack-carousel"
+import { motion } from "motion/react"
+import { FAQAccordion } from "@/components/ui/faq-accordion"
+import { WarpBackground } from "@/components/ui/warp-background"
+
+import { AIAutomationHero } from "@/components/services/ai-automation-hero"
+import { AestheticTestimonials } from "@/components/ui/aesthetic-testimonials"
+
+const faqs = [
+    {
+        question: "What specific processes can you automate?",
+        answer: "We automate lead qualification, customer support queries, invoicing, data entry, email outreach, scheduling, and custom internal workflows unique to your business."
+    },
+    {
+        question: "Is my data secure?",
+        answer: "Absolutely. We use enterprise-grade encryption and adhere to strict privacy standards. We never use your proprietary data to train public AI models."
+    },
+    {
+        question: "How quickly can we see results?",
+        answer: "Most automation workflows go live in 5-10 days. You'll typically see time-savings and efficiency gains immediately on the first day of deployment."
+    },
+    {
+        question: "Do I need technical knowledge to run this?",
+        answer: "None at all. We build the system to run on autopilot. You just enjoy the efficiency, or use simple dashboards we provide to monitor performance."
+    }
+]
+
+export function AIAutomationContent() {
+    return (
+        <div className="bg-[var(--color-bg)]">
+            {/* ── Section 1: Original Hero ── */}
+            <WarpBackground
+                className="pt-32 pb-16 border-0 rounded-none bg-[var(--color-bg)] overflow-hidden"
+                gridColor="rgba(255,255,255,0.06)"
+                beamsPerSide={4}
+                beamSize={5}
+                beamDelayMax={4}
+                beamDelayMin={0}
+                beamDuration={4}
+                perspective={150}
+            >
+                <Container>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-4xl mx-auto text-center relative z-10"
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium mb-6 border border-blue-500/20">
+                            <Sparkles className="w-4 h-4" />
+                            <span>Next-Gen AI Automation</span>
+                        </div>
+                        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[var(--color-text)] mb-6">
+                            AI Solutions That <span className="text-blue-500">Drive Growth</span>
+                        </h1>
+                        <p className="text-xl text-[var(--color-text-secondary)] mb-8 max-w-2xl mx-auto leading-relaxed">
+                            Transform your business with intelligent agents that qualify leads, automate campaigns, and streamline operations. Not just chat—real solutions.
+                        </p>
+                    </motion.div>
+                </Container>
+            </WarpBackground>
+
+            {/* ── Section 2: 3D Boxing Robot + Copy ── */}
+            <AIAutomationHero />
+
+
+            {/* Tech Stack Carousel */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+            >
+                <TechStackCarousel />
+            </motion.div>
+
+            {/* FAQs */}
+            <section className="py-24 bg-[var(--color-bg-soft)] border-t border-[var(--color-border)]">
+                <Container>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-16"
+                    >
+                        <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">Automation Questions</h2>
+                        <p className="text-[var(--color-text-secondary)]">Common questions about AI implementation.</p>
+                    </motion.div>
+                    <FAQAccordion items={faqs} />
+                </Container>
+            </section>
+
+            <AestheticTestimonials />
+
+            <section className="py-24 bg-[var(--color-bg)] border-t border-[var(--color-border)]">
+                <CTASection />
+            </section>
+        </div>
+    )
+}

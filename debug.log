@@ -1,0 +1,40 @@
+2026-02-17T19:53:18.075Z [console][warn] %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+2026-02-17T19:53:18.080Z [console][warn] %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+2026-02-17T19:53:18.083Z [console][warn] %c[Vercel Web Analytics]%c [view] http://localhost:3000/app-development color: rgb(120, 120, 120) color: inherit [object Object] /_vercel/insights/view
+2026-02-17T20:17:53.217Z [console][error] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+2026-02-17T20:17:53.217Z [console][error] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+2026-02-17T21:58:12.293Z [console][error] Uncaught ReferenceError: ServicesGrid is not defined
+2026-02-17T21:58:15.318Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T21:58:16.254Z [console][error] [Fast Refresh] performing full reload because your application had an unrecoverable error
+2026-02-17T21:58:18.559Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T21:58:15.318Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T21:58:15.548Z [console][warn] [Fast Refresh] rebuilding
+2026-02-17T21:58:16.254Z [console][error] [Fast Refresh] performing full reload because your application had an unrecoverable error
+2026-02-17T21:58:16.254Z [console][warn] [Fast Refresh] done in 941ms
+2026-02-17T21:58:18.559Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T21:58:15.548Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T21:58:16.225Z [console][warn] [Fast Refresh] performing full reload because your application had an unrecoverable error
+2026-02-17T21:58:16.242Z [console][log] [Fast Refresh] done in 941ms
+2026-02-17T21:58:12.293Z [console][error] Uncaught ReferenceError: ServicesGrid is not defined
+2026-02-17T21:58:15.318Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T21:58:16.254Z [console][error] [Fast Refresh] performing full reload because your application had an unrecoverable error
+2026-02-17T21:58:18.559Z [console][error] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__e3b35d83._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T22:25:06.270Z [console][error] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+2026-02-17T22:25:09.618Z [console][error] The resource http://localhost:3000/_next/static/media/5c285b27cdda1fe8-s.p.a62025f2.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T22:25:09.619Z [console][error] The resource http://localhost:3000/_next/static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+2026-02-17T22:38:08.980Z [console][log] [Fast Refresh] done in 113ms
+2026-02-17T22:38:10.984Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:38:11.013Z [console][log] [Fast Refresh] done in 133ms
+2026-02-17T22:38:11.150Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:38:11.152Z [console][log] [Fast Refresh] done in 103ms
+2026-02-17T22:38:37.283Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:38:37.558Z [console][log] [Fast Refresh] done in 542ms
+2026-02-17T22:38:50.140Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:38:50.229Z [console][log] [Fast Refresh] done in 706ms
+2026-02-17T22:38:59.293Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:38:59.512Z [console][log] [Fast Refresh] done in 384ms
+2026-02-17T22:39:08.767Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:39:08.791Z [console][log] [Fast Refresh] done in 473ms
+2026-02-17T22:39:11.285Z [console][log] [Fast Refresh] rebuilding
+2026-02-17T22:39:11.342Z [console][log] [Fast Refresh] done in 460ms
+2026-02-19T15:26:23.440Z [console][error] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
