@@ -157,10 +157,7 @@ export function MobileHero() {
                     <div
                         key={stage.id}
                         ref={el => { stageRefs.current[i] = el }}
-                        className={`absolute inset-0 z-10 flex flex-col items-center ${stage.position === "below"
-                            ? "justify-end pb-[15vh]"
-                            : "justify-center"
-                            } pointer-events-none px-6`}
+                        className={`absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none px-6`}
                     >
                         {/* Headline */}
                         <h1
