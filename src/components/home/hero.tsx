@@ -90,7 +90,7 @@ export function Hero() {
         resizeCanvas()
         window.addEventListener("resize", resizeCanvas)
 
-        // ── Preload all frames ──
+        // ── Preload frames progressively ──
         const images: HTMLImageElement[] = []
         let loadedCount = 0
 
@@ -122,15 +122,31 @@ export function Hero() {
             currentFrameRef.current = index
         }
 
-        for (let i = 0; i < TOTAL_FRAMES; i++) {
+        // Recursive sequential loader to prevent network jamming
+        function loadNextFrame(index: number) {
+            if (index >= TOTAL_FRAMES) return // All frames loaded
+
             const img = new Image()
-            img.src = frameSrc(i + 1)
+            img.src = frameSrc(index + 1)
             img.onload = () => {
+                images[index] = img
                 loadedCount++
-                if (i === 0) drawFrame(0) // Draw first frame immediately
+                if (index === 0) {
+                    drawFrame(0) // Draw first frame immediately
+                }
+                // Load the next frame only after this one finishes
+                loadNextFrame(index + 1)
             }
-            images[i] = img
+            img.onerror = () => {
+                // If a frame fails, skip it and try the next one
+                images[index] = images[Math.max(0, index - 1)] // Fallback to previous
+                loadNextFrame(index + 1)
+            }
         }
+
+        // Start the loading sequence
+        loadNextFrame(0)
+
         imagesRef.current = images
 
         // ── GSAP Context (scoped to this section only) ──
