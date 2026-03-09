@@ -80,8 +80,25 @@ export function SaaSDevContent() {
     const heroTextY = useTransform(heroScroll, [0, 1], [0, 180])
     const heroTextOpacity = useTransform(heroScroll, [0, 0.6], [1, 0])
 
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer
+            }
+        }))
+    }
+
     return (
         <div className="bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
 
             {/* ═══════════════════════════════════════
                  HERO — Preserved Gradient, Redesigned Copy & Space
@@ -128,9 +145,15 @@ export function SaaSDevContent() {
                         </LineReveal>
 
                         <FadeReveal delay={0.3}>
-                            <p className="text-xl md:text-2xl text-white/60 font-light max-w-2xl leading-relaxed mb-12">
+                            <p className="text-xl md:text-2xl text-white/60 font-light max-w-2xl leading-relaxed mb-6">
                                 We design and engineer highly scalable custom software platforms, influencer marketplaces, and outreach tools for founders who see a gap in the market.
                             </p>
+                        </FadeReveal>
+
+                        <FadeReveal delay={0.35}>
+                            <div className="text-sm md:text-base text-white/40 leading-relaxed max-w-2xl mb-12 font-medium">
+                                <p><strong className="text-white/70">Scale Your Business</strong> is a top SaaS MVP development agency in India. We help startups and enterprises across Bangalore, Mumbai, Delhi, and globally to build custom B2B SaaS platforms with enterprise-grade security and scalable architectures.</p>
+                            </div>
                         </FadeReveal>
 
                         <FadeReveal delay={0.4}>
@@ -158,23 +181,56 @@ export function SaaSDevContent() {
             {/* ═══════════════════════════════════════
                  PSYCHOLOGY / THE HOOK
             ═══════════════════════════════════════ */}
-            <section className="py-32 md:py-48 bg-white overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-[var(--color-brand)]/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                
-                <Container>
-                    <div className="grid lg:grid-cols-[1fr_1fr] gap-16 md:gap-24 items-center">
+            <section className="py-32 md:py-48 bg-[#030712] overflow-hidden relative border-y border-white/5">
+                {/* Immersive Remotion Animated Background */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {/* OPTIMIZATION: Blur applied to static parent instead of individual animating children. Hardware accelerated. */}
+                    <div className="absolute inset-0 opacity-60 blur-[100px] transform-gpu pointer-events-none">
+                        {[...Array(3)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute bg-[var(--color-brand)]/20 rounded-full"
+                                animate={{
+                                    x: [(i % 2 === 0 ? 0 : 100), (i % 3 === 0 ? -100 : 80), 0],
+                                    y: [(i % 2 === 0 ? 100 : 0), (i % 3 === 0 ? 80 : -100), 0],
+                                    scale: [1, 1.2, 1],
+                                }}
+                                transition={{
+                                    duration: 18 + i * 2,
+                                    repeat: Infinity,
+                                    repeatType: "reverse",
+                                    ease: "linear",
+                                }}
+                                style={{
+                                    width: 300 + i * 60,
+                                    height: 300 + i * 60,
+                                    left: `${(i * 20) % 80}%`,
+                                    top: `${(i * 25) % 80}%`,
+                                    willChange: "transform",
+                                }}
+                            />
+                        ))}
+                    </div>
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_80%)]" />
+                </div>
+
+                <Container className="relative z-10">
+                    <div className="grid lg:grid-cols-[1.1fr_1fr] gap-16 md:gap-24 items-center">
                         <div>
                             <FadeReveal>
-                                <div className="text-[11px] font-bold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-6">THE REALITY</div>
+                                <div className="inline-flex items-center gap-2 px-4 py-2 border border-white/10 bg-white/5 backdrop-blur-md rounded-full text-[10px] font-bold tracking-[0.25em] uppercase text-white/60 mb-8">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                    The Reality
+                                </div>
                             </FadeReveal>
                             <LineReveal delay={0.1}>
-                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[0.95] mb-8">
+                                <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.95] mb-8 text-white">
                                     The hardest part isn&apos;t the idea.<br />
-                                    <span className="text-[var(--color-brand)]">It&apos;s the execution.</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400">It&apos;s the execution.</span>
                                 </h2>
                             </LineReveal>
                             <FadeReveal delay={0.2}>
-                                <div className="space-y-6 text-lg text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                <div className="space-y-6 text-xl text-white/60 leading-relaxed font-light">
                                     <p>
                                         You know your industry inside out. You know what workflow is broken, what data is missing, and what people will gladly pay a monthly subscription to solve.
                                     </p>
@@ -187,31 +243,28 @@ export function SaaSDevContent() {
 
                         <div className="relative">
                             <FadeReveal delay={0.3}>
-                                <div className="p-10 md:p-14 border border-[var(--color-border)] bg-[var(--color-bg-soft)] relative z-10 group hover:border-[var(--color-brand)]/30 transition-colors duration-500">
-                                    {/* Accent corner */}
-                                    <div className="absolute top-0 left-0 w-20 h-20 bg-[var(--color-brand)]/5 border-b border-r border-[var(--color-border)] pointer-events-none" />
-                                    
-                                    <h3 className="text-2xl font-black mb-6">We are the execution engine.</h3>
-                                    <p className="text-[var(--color-text-secondary)] leading-relaxed mb-10">
+                                <div className="p-8 md:p-12 rounded-[2rem] border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] relative z-10 overflow-hidden">
+                                    {/* Glassmorphism subtle glare */}
+                                    <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                                    <div className="absolute top-0 left-[-50%] w-[200%] h-[200%] bg-gradient-to-br from-white/5 via-transparent to-transparent rotate-45 pointer-events-none" />
+
+                                    <h3 className="text-2xl font-black mb-6 text-white tracking-tight">We are the execution engine.</h3>
+                                    <p className="text-white/60 leading-relaxed mb-10 font-medium">
                                         We operate as your shadow technical co-founder. We map the data architecture, design the UI natively, build the backend, and deploy it to production.
                                     </p>
-                                    
-                                    <div className="space-y-4">
+
+                                    <div className="space-y-4 relative z-20">
                                         {["Transparent scoping & timelines", "Production-grade tech stack", "Revenue-ready architecture"].map((itm) => (
-                                            <div key={itm} className="flex items-center gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
-                                                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                                            <div key={itm} className="flex items-center gap-4 bg-black/40 p-4 rounded-xl border border-white/5 hover:bg-white/5 transition-colors group">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
+                                                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
                                                 </div>
-                                                <span className="text-sm font-bold text-[var(--color-text)]">{itm}</span>
+                                                <span className="text-sm font-bold text-white/90">{itm}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </FadeReveal>
-                            
-                            {/* Decorative background blocks */}
-                            <div className="absolute -top-6 -right-6 w-full h-full border border-[var(--color-border)] bg-white z-0" />
-                            <div className="absolute -bottom-6 -left-6 w-full h-full border border-[var(--color-border)]/50 bg-[var(--color-bg)] z-0" />
                         </div>
                     </div>
                 </Container>
@@ -223,7 +276,7 @@ export function SaaSDevContent() {
             <section className="py-32 bg-black text-white relative overflow-hidden">
                 <div className="absolute inset-0 noise-overlay opacity-[0.08] pointer-events-none" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[50vh] bg-blue-900/10 blur-[150px] pointer-events-none" />
-                
+
                 <Container className="relative z-10">
                     <div className="text-center mb-24">
                         <FadeReveal>
@@ -299,20 +352,50 @@ export function SaaSDevContent() {
                 <Container>
                     <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
                         <FadeReveal className="w-full md:w-1/2">
-                            <div className="aspect-square max-h-[500px] w-full bg-white border border-[var(--color-border)] shadow-2xl rounded-2xl overflow-hidden relative group">
-                                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-700 mix-blend-multiply grayscale" />
-                                <div className="absolute inset-4 border border-[var(--color-border)] flex flex-col p-8 bg-white/90 backdrop-blur-sm">
-                                    <div className="flex justify-between items-center mb-8 border-b border-[var(--color-border)] pb-4">
+                            <div className="aspect-square max-h-[500px] w-full bg-black border border-[var(--color-border)] shadow-2xl rounded-2xl overflow-hidden relative group">
+                                {/* Animated Motion Graphics Background */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-[#0f172a] to-black overflow-hidden pointer-events-none">
+                                    {/* OPTIMIZATION: Blur applied to static parent instead of individual animating children. Hardware accelerated. */}
+                                    <div className="absolute inset-0 opacity-40 mix-blend-screen blur-[60px] transform-gpu pointer-events-none">
+                                        {[...Array(3)].map((_, i) => (
+                                            <motion.div
+                                                key={i}
+                                                className="absolute bg-blue-500/20 rounded-full"
+                                                animate={{
+                                                    x: [(i % 2 === 0 ? 0 : 40), (i % 3 === 0 ? -40 : 20), 0],
+                                                    y: [(i % 2 === 0 ? 40 : 0), (i % 3 === 0 ? 20 : -40), 0],
+                                                    scale: [1, 1.1, 1],
+                                                }}
+                                                transition={{
+                                                    duration: 15 + i * 2,
+                                                    repeat: Infinity,
+                                                    repeatType: "reverse",
+                                                    ease: "linear",
+                                                }}
+                                                style={{
+                                                    width: 250 + i * 40,
+                                                    height: 250 + i * 40,
+                                                    left: `${(i * 20) % 70}%`,
+                                                    top: `${(i * 30) % 70}%`,
+                                                    willChange: "transform",
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
+                                </div>
+                                <div className="absolute inset-4 border border-[var(--color-border)]/20 flex flex-col p-8 bg-black/40 text-white backdrop-blur-md rounded-xl">
+                                    <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                                         <div className="flex gap-2">
                                             <div className="w-3 h-3 rounded-full bg-red-400" />
                                             <div className="w-3 h-3 rounded-full bg-yellow-400" />
                                             <div className="w-3 h-3 rounded-full bg-green-400" />
                                         </div>
-                                        <div className="text-[10px] font-bold text-[var(--color-text-muted)] tracking-widest">AGENCY PORTAL.EXE</div>
+                                        <div className="text-[10px] font-bold text-white/50 tracking-widest">AGENCY PORTAL.EXE</div>
                                     </div>
                                     <div className="flex-1 flex flex-col justify-center">
                                         <h4 className="text-3xl font-black mb-4">You run an agency.</h4>
-                                        <p className="text-[var(--color-text-secondary)] font-medium leading-relaxed">
+                                        <p className="text-white/70 font-medium leading-relaxed">
                                             Stop sharing Google Docs with clients paying you thousands of dollars. We have pre-built modules for client tracking, ticketing, and invoicing that we can white-label and deploy for your agency in under 2 weeks.
                                         </p>
                                     </div>
@@ -381,6 +464,26 @@ export function SaaSDevContent() {
                         </div>
                         <div>
                             <FAQAccordion items={faqs} />
+                        </div>
+                    </div>
+                </Container>
+            </section>
+
+            {/* ─── INTERNAL LINKS ───────────────────────────────────────── */}
+            <section className="py-16 bg-[#FAFAFA] border-y border-[var(--color-border)]">
+                <Container>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tight">Scale Further</h3>
+                            <p className="text-gray-500 max-w-xl">Supercharge your SaaS product with AI workflows or launch a companion mobile app.</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <Link href="/ai-automation" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                AI Automation <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/app-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                Mobile Apps <ArrowRight className="w-4 h-4" />
+                            </Link>
                         </div>
                     </div>
                 </Container>

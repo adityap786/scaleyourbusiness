@@ -32,7 +32,7 @@ export function TrustBuilder() {
     const [hoveredId, setHoveredId] = useState<string | null>(null)
 
     const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] })
-    
+
     // Smooth aggressive motion
     const titleY = useTransform(scrollYProgress, [0, 1], ["0%", "80%"])
     const titleOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0])
@@ -94,7 +94,7 @@ export function TrustBuilder() {
 
                                 <h3 className="text-2xl font-black tracking-tight text-zinc-950 mb-5 leading-none">
                                     {client.label}
-                               </h3>
+                                </h3>
 
                                 <p className="text-sm text-zinc-500 leading-relaxed font-medium">
                                     {client.impact}

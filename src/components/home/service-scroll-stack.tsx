@@ -1,9 +1,11 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, useCallback, useState } from "react"
 import { ArrowRight, Globe, Zap, Search, Gauge, Bot, Workflow, Clock, Sparkles, ShieldAlert, Lock, Server, Smartphone, Layers, Megaphone, Video, TrendingUp, Users, RefreshCw } from "lucide-react"
 import { motion } from "motion/react"
 import Link from "next/link"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Player } from "@remotion/player"
 import { WebsiteServiceComposition } from "../../../remotion/compositions/WebsiteService"
 import { PhoneMockup, MockupChatUI } from "@/components/ui/phone-mockup"
@@ -19,12 +21,12 @@ const webFeatures = [
 function WebsiteCard() {
     return (
         <div className="relative w-full h-full flex flex-col lg:flex-row items-center gap-0 overflow-hidden rounded-[2.5rem] bg-[var(--color-bg)] border border-[var(--color-border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]">
-            <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0 lg:w-[50%] h-full">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-6 w-fit">
+            <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 py-8 lg:py-0 lg:w-[50%] h-full min-h-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-4 w-fit shrink-0">
                     <Globe className="w-3.5 h-3.5" />
                     Website Architecture
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-[var(--color-text)] mb-6 leading-[1.05] uppercase">
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-tight text-[var(--color-text)] mb-4 leading-[1.05] uppercase shrink-0">
                     Websites That<br />
                     <span
                         className="bg-clip-text text-transparent"
@@ -33,11 +35,11 @@ function WebsiteCard() {
                         Convert Cold Traffic
                     </span>
                 </h2>
-                <p className="text-sm md:text-base lg:text-lg text-[var(--color-text-muted)] mb-10 max-w-md leading-relaxed font-medium">
+                <p className="text-sm md:text-base text-[var(--color-text-muted)] mb-6 max-w-md leading-relaxed font-medium shrink-0">
                     Most websites are digital brochures. We build high-converting sales engines engineered with buyer psychology and blazing-fast architecture to turn clicks into reliable revenue.
                 </p>
 
-                <div className="space-y-4 mb-10">
+                <div className="space-y-3 mb-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
                     {webFeatures.map((f, i) => (
                         <motion.div
                             key={f.title}
@@ -45,20 +47,20 @@ function WebsiteCard() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.12, duration: 0.5 }}
-                            className="flex items-start gap-4 group"
+                            className="flex items-start gap-3 group"
                         >
-                            <div className="h-10 w-10 rounded-xl bg-[var(--color-bg-soft)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:bg-[var(--color-brand)] group-hover:border-[var(--color-brand)] transition-all duration-400">
-                                <f.icon className="h-4 w-4 text-[var(--color-brand)] group-hover:text-white transition-colors duration-400" />
+                            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-[var(--color-bg-soft)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:bg-[var(--color-brand)] group-hover:border-[var(--color-brand)] transition-all duration-400">
+                                <f.icon className="h-3 w-3 md:h-4 md:w-4 text-[var(--color-brand)] group-hover:text-white transition-colors duration-400" />
                             </div>
                             <div>
-                                <p className="text-sm md:text-base font-bold text-[var(--color-text)]">{f.title}</p>
-                                <p className="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
+                                <p className="text-xs md:text-sm font-bold text-[var(--color-text)]">{f.title}</p>
+                                <p className="text-[10px] md:text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 shrink-0 mt-auto pb-2">
                     <Link href="/website-development" className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-[var(--color-brand)] hover:opacity-90 text-white text-xs md:text-sm font-black uppercase tracking-wider w-fit transition-all duration-300 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] group z-20">
                         View Web Dev
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -115,12 +117,12 @@ function AppDevCard() {
         <div className="relative w-full h-full flex flex-col lg:flex-row items-center gap-0 overflow-hidden rounded-[2.5rem] bg-[var(--color-bg)] border border-[var(--color-border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none mix-blend-multiply" />
 
-            <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0 lg:w-[50%] h-full">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-cyan-600 bg-cyan-600/10 border border-cyan-600/20 mb-6 w-fit">
+            <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 py-8 lg:py-0 lg:w-[50%] h-full min-h-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-cyan-600 bg-cyan-600/10 border border-cyan-600/20 mb-4 w-fit shrink-0">
                     <Smartphone className="w-3.5 h-3.5" />
                     Custom Software
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-[var(--color-text)] mb-6 leading-[1.05] uppercase">
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-tight text-[var(--color-text)] mb-4 leading-[1.05] uppercase shrink-0">
                     Apps That<br />
                     <span
                         className="bg-clip-text text-transparent"
@@ -129,11 +131,11 @@ function AppDevCard() {
                         Become Habits
                     </span>
                 </h2>
-                <p className="text-sm md:text-base lg:text-lg text-[var(--color-text-muted)] mb-10 max-w-md leading-relaxed font-medium">
+                <p className="text-sm md:text-base text-[var(--color-text-muted)] mb-6 max-w-md leading-relaxed font-medium shrink-0">
                     Stop building tools no one uses. We engineer frictionless, habit-forming software with enterprise-grade architecture that your users will refuse to live without.
                 </p>
 
-                <div className="space-y-4 mb-10">
+                <div className="space-y-3 mb-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
                     {appFeatures.map((f, i) => (
                         <motion.div
                             key={f.title}
@@ -141,20 +143,20 @@ function AppDevCard() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.12, duration: 0.5 }}
-                            className="flex items-start gap-4 group"
+                            className="flex items-start gap-3 group"
                         >
-                            <div className="h-10 w-10 rounded-xl bg-[var(--color-bg-soft)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:bg-cyan-500 group-hover:border-cyan-500 transition-all duration-400">
-                                <f.icon className="h-4 w-4 text-cyan-600 group-hover:text-white transition-colors duration-400" />
+                            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-[var(--color-bg-soft)] border border-[var(--color-border)] flex items-center justify-center shrink-0 group-hover:bg-cyan-500 group-hover:border-cyan-500 transition-all duration-400">
+                                <f.icon className="h-3 w-3 md:h-4 md:w-4 text-cyan-600 group-hover:text-white transition-colors duration-400" />
                             </div>
                             <div>
-                                <p className="text-sm md:text-base font-bold text-[var(--color-text)]">{f.title}</p>
-                                <p className="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
+                                <p className="text-xs md:text-sm font-bold text-[var(--color-text)]">{f.title}</p>
+                                <p className="text-[10px] md:text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 shrink-0 mt-auto pb-2">
                     <Link href="/saas-development" className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-cyan-600 hover:opacity-90 text-white text-xs md:text-sm font-black uppercase tracking-wider w-fit transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] group z-20">
                         View SaaS Dev
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -207,12 +209,12 @@ function CyberCard() {
         <div className="relative w-full h-full flex flex-col lg:flex-row items-center gap-0 overflow-hidden rounded-[2.5rem] bg-black border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
             <div className="absolute inset-0 bg-red-500/[0.02] pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
 
-            <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0 lg:w-[50%] h-full">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-red-500 bg-red-500/10 border border-red-500/20 mb-6 w-fit">
+            <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 py-8 lg:py-0 lg:w-[50%] h-full min-h-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-red-500 bg-red-500/10 border border-red-500/20 mb-4 w-fit shrink-0">
                     <ShieldAlert className="w-3.5 h-3.5" />
                     Offensive Security
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-white mb-6 leading-[1.05] uppercase">
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-tight text-white mb-4 leading-[1.05] uppercase shrink-0">
                     Don't Be<br />
                     <span
                         className="bg-clip-text text-transparent"
@@ -221,11 +223,11 @@ function CyberCard() {
                         Tomorrow's Headline
                     </span>
                 </h2>
-                <p className="text-sm md:text-base lg:text-lg text-white/60 mb-10 max-w-md leading-relaxed font-medium">
+                <p className="text-sm md:text-base text-white/60 mb-6 max-w-md leading-relaxed font-medium shrink-0">
                     A single breach erases years of trust in seconds. We deploy elite offensive security teams to shatter your defenses internally, patching critical vulnerabilities before they explode.
                 </p>
 
-                <div className="space-y-4 mb-10">
+                <div className="space-y-3 mb-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
                     {cyberFeatures.map((f, i) => (
                         <motion.div
                             key={f.title}
@@ -233,20 +235,20 @@ function CyberCard() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.12, duration: 0.5 }}
-                            className="flex items-start gap-4 group"
+                            className="flex items-start gap-3 group"
                         >
-                            <div className="h-10 w-10 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-400">
-                                <f.icon className="h-4 w-4 text-red-500 group-hover:text-white transition-colors duration-400" />
+                            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-400">
+                                <f.icon className="h-3 w-3 md:h-4 md:w-4 text-red-500 group-hover:text-white transition-colors duration-400" />
                             </div>
                             <div>
-                                <p className="text-sm md:text-base font-bold text-white/90">{f.title}</p>
-                                <p className="text-xs text-white/50 leading-relaxed mt-0.5 font-medium">{f.desc}</p>
+                                <p className="text-xs md:text-sm font-bold text-white/90">{f.title}</p>
+                                <p className="text-[10px] md:text-xs text-white/50 leading-relaxed mt-0.5 font-medium">{f.desc}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 shrink-0 mt-auto pb-2">
                     <Link href="/cybersecurity" className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-red-600 hover:opacity-90 text-white text-xs md:text-sm font-black uppercase tracking-wider w-fit transition-all duration-300 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] group z-20">
                         View Security
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -298,12 +300,12 @@ function AICard() {
             <div className="absolute top-0 left-[30%] w-96 h-96 bg-[radial-gradient(ellipse,rgba(79,70,229,0.1),transparent_70%)] pointer-events-none" />
             <div className="absolute bottom-0 right-[20%] w-72 h-72 bg-[radial-gradient(ellipse,rgba(16,185,129,0.1),transparent_70%)] pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0 lg:w-[50%] h-full">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-[#34D399] bg-[#10B981]/10 border border-[#10B981]/20 mb-6 w-fit">
+            <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 py-8 lg:py-0 lg:w-[50%] h-full min-h-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-[#34D399] bg-[#10B981]/10 border border-[#10B981]/20 mb-4 w-fit shrink-0">
                     <Sparkles className="w-3.5 h-3.5" />
                     AI Automation
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-white mb-6 leading-[1.05] uppercase">
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-tight text-white mb-4 leading-[1.05] uppercase shrink-0">
                     Stop Doing<br />
                     <span
                         className="bg-clip-text text-transparent"
@@ -312,22 +314,22 @@ function AICard() {
                         Robotic Work
                     </span>
                 </h2>
-                <p className="text-sm md:text-base lg:text-lg text-white/60 mb-10 max-w-md leading-relaxed font-medium">
+                <p className="text-sm md:text-base text-white/60 mb-6 max-w-md leading-relaxed font-medium shrink-0">
                     Stop burning human capital on repetitive tasks. We deploy custom LLM agents and autonomous workflows that run 24/7, permanently eliminating operational bottlenecks.
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                        <div className="text-2xl md:text-3xl font-black text-white">15+</div>
-                        <div className="text-[10px] md:text-xs font-bold text-white/40 uppercase tracking-widest mt-1">Hrs Saved/Wk</div>
+                <div className="grid grid-cols-2 gap-3 mb-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar shrink-0">
+                    <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                        <div className="text-xl md:text-3xl font-black text-white">15+</div>
+                        <div className="text-[9px] md:text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Hrs Saved/Wk</div>
                     </div>
-                    <div className="p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                        <div className="text-2xl md:text-3xl font-black text-white">24/7</div>
-                        <div className="text-[10px] md:text-xs font-bold text-white/40 uppercase tracking-widest mt-1">Always Active</div>
+                    <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                        <div className="text-xl md:text-3xl font-black text-white">24/7</div>
+                        <div className="text-[9px] md:text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">Always Active</div>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 shrink-0 mt-auto pb-2">
                     <Link href="/ai-automation" className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-[#10B981] hover:opacity-90 text-white text-xs md:text-sm font-black uppercase tracking-wider w-fit transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] group z-20">
                         View AI systems
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -387,12 +389,12 @@ function MarketingCard() {
         <div className="relative w-full h-full flex flex-col lg:flex-row items-center gap-0 overflow-hidden rounded-[2.5rem] bg-[var(--color-bg)] border border-[var(--color-border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]">
             <div className="absolute inset-0 bg-fuchsia-500/[0.02] pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0 lg:w-[50%] h-full">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-fuchsia-600 bg-fuchsia-600/10 border border-fuchsia-600/20 mb-6 w-fit">
+            <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 py-8 lg:py-0 lg:w-[50%] h-full min-h-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-fuchsia-600 bg-fuchsia-600/10 border border-fuchsia-600/20 mb-4 w-fit shrink-0">
                     <TrendingUp className="w-3.5 h-3.5" />
                     Growth & Traffic
                 </span>
-                <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-[var(--color-text)] mb-6 leading-[1.05] uppercase">
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-tight text-[var(--color-text)] mb-4 leading-[1.05] uppercase shrink-0">
                     Influence &
                     <span
                         className="bg-clip-text text-transparent drop-shadow-sm ml-2 md:ml-0 md:block"
@@ -401,11 +403,11 @@ function MarketingCard() {
                         Dominate
                     </span>
                 </h2>
-                <p className="text-sm md:text-base lg:text-lg text-[var(--color-text-muted)] mb-10 max-w-md leading-relaxed font-medium">
+                <p className="text-sm md:text-base text-[var(--color-text-muted)] mb-6 max-w-md leading-relaxed font-medium shrink-0">
                     Attention is the only currency that matters. We engineer hook-driven content and brutal data-backed media buying strategies to flood your funnels.
                 </p>
 
-                <div className="space-y-4 mb-10">
+                <div className="space-y-3 mb-6 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
                     {marketingFeatures.map((f, i) => (
                         <motion.div
                             key={f.title}
@@ -413,20 +415,20 @@ function MarketingCard() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.12, duration: 0.5 }}
-                            className="flex items-start gap-4 group"
+                            className="flex items-start gap-3 group"
                         >
-                            <div className="h-10 w-10 rounded-xl bg-fuchsia-600/5 border border-fuchsia-600/20 flex items-center justify-center shrink-0 group-hover:bg-fuchsia-600 group-hover:border-fuchsia-600 transition-all duration-400">
-                                <f.icon className="h-4 w-4 text-fuchsia-600 group-hover:text-white transition-colors duration-400" />
+                            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-fuchsia-600/5 border border-fuchsia-600/20 flex items-center justify-center shrink-0 group-hover:bg-fuchsia-600 group-hover:border-fuchsia-600 transition-all duration-400">
+                                <f.icon className="h-3 w-3 md:h-4 md:w-4 text-fuchsia-600 group-hover:text-white transition-colors duration-400" />
                             </div>
                             <div>
-                                <p className="text-sm md:text-base font-bold text-[var(--color-text)]">{f.title}</p>
-                                <p className="text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
+                                <p className="text-xs md:text-sm font-bold text-[var(--color-text)]">{f.title}</p>
+                                <p className="text-[10px] md:text-xs text-[var(--color-text-muted)] leading-relaxed mt-0.5 font-medium">{f.desc}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 shrink-0 mt-auto pb-2">
                     <Link href="/marketing-services" className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-fuchsia-600 hover:opacity-90 text-white text-xs md:text-sm font-black uppercase tracking-wider w-fit transition-all duration-300 shadow-[0_0_20px_rgba(217,70,239,0.3)] hover:shadow-[0_0_30px_rgba(217,70,239,0.5)] group z-20">
                         Scale Audiences
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -473,7 +475,12 @@ function MarketingCard() {
     )
 }
 
-// ─── Scroll Stack Wrapper ───────────────────────────────────────────────────
+// ─── Liquid Data-Stream Scrollytelling Architecture ────────────────────────
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger)
+}
+
 const CARDS = [
     { id: "web", Component: WebsiteCard },
     { id: "app", Component: AppDevCard },
@@ -483,52 +490,241 @@ const CARDS = [
 ]
 
 export function ServiceScrollStack() {
+    const stageRef = useRef<HTMLDivElement>(null)
+    const pinRef = useRef<HTMLDivElement>(null)
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+
+    // Liquid Mesh Refs
+    const plasmaScaleLayer = useRef<HTMLDivElement>(null)
+    const plasmaSpinLayer = useRef<HTMLDivElement>(null)
+    const blob1 = useRef<HTMLDivElement>(null)
+    const blob2 = useRef<HTMLDivElement>(null)
+    const blob3 = useRef<HTMLDivElement>(null)
+    const blob4 = useRef<HTMLDivElement>(null)
+
+    const [viewport, setViewport] = useState({ vh: 1200, vw: 1500 })
+    const isMounted = useRef(false)
+
+    const setCardRef = useCallback((el: HTMLDivElement | null, i: number) => {
+        cardRefs.current[i] = el
+    }, [])
+
+    useEffect(() => {
+        isMounted.current = true
+        const handleResize = () => {
+            setViewport({ vh: window.innerHeight, vw: window.innerWidth })
+        }
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    useEffect(() => {
+        if (typeof window === "undefined" || !isMounted.current) return
+
+        const stage = stageRef.current
+        const pinContainer = pinRef.current
+        const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[]
+        const b1 = blob1.current, b2 = blob2.current, b3 = blob3.current, b4 = blob4.current
+        const scaleLayer = plasmaScaleLayer.current
+        const spinLayer = plasmaSpinLayer.current
+
+        if (!stage || !pinContainer || cards.length === 0 || !b1 || !scaleLayer || !spinLayer) return
+
+        const numCards = cards.length
+
+        // ── GSAP Context (scoped to this section only) ──
+        const ctx = gsap.context(() => {
+
+            // Base states: All cards stacked perfectly dead-center. 
+            // Invisible, scaled down, heavily blurred (liquefied).
+            gsap.set(cards, {
+                opacity: 0,
+                scale: 0.8,
+                yPercent: 15,
+                filter: "blur(20px)",
+                pointerEvents: "none",
+            })
+
+            // First card is pre-focused
+            gsap.set(cards[0], {
+                opacity: 1,
+                scale: 1,
+                yPercent: 0,
+                filter: "blur(0px)",
+                pointerEvents: "auto",
+            })
+
+            // Highly curated, aggressive color palettes for each service
+            const THEMES = [
+                { b1: "#3b82f6", b2: "#06b6d4", b3: "#1d4ed8", b4: "#38bdf8" }, // Web (Blue)
+                { b1: "#a855f7", b2: "#ec4899", b3: "#7e22ce", b4: "#d946ef" }, // App (Purple)
+                { b1: "#ef4444", b2: "#f97316", b3: "#b91c1c", b4: "#f43f5e" }, // Cyber (Red)
+                { b1: "#06b6d4", b2: "#10b981", b3: "#0369a1", b4: "#34d399" }, // AI (Cyan)
+                { b1: "#f59e0b", b2: "#facc15", b3: "#b45309", b4: "#fbbf24" }, // Marketing (Amber)
+            ]
+
+            // Init blobs to Card 0 palette
+            gsap.set(b1, { backgroundColor: THEMES[0].b1 })
+            gsap.set(b2, { backgroundColor: THEMES[0].b2 })
+            gsap.set(b3, { backgroundColor: THEMES[0].b3 })
+            gsap.set(b4, { backgroundColor: THEMES[0].b4 })
+
+            // ── Independent Liquid Physics ──
+            // This spins endlessly forever, providing the organic liquid churn.
+            const ambient = gsap.timeline({ repeat: -1 })
+            ambient.to(spinLayer, { rotation: 360, duration: 40, ease: "none" })
+
+            // Internal sloshing
+            const slosh = gsap.timeline({ repeat: -1, yoyo: true })
+            slosh.to(b1, { xPercent: 30, yPercent: -30, duration: 8, ease: "sine.inOut" }, 0)
+            slosh.to(b2, { xPercent: -30, yPercent: 30, duration: 9, ease: "sine.inOut" }, 0)
+            slosh.to(b3, { xPercent: 30, yPercent: 40, duration: 10, ease: "sine.inOut" }, 0)
+            slosh.to(b4, { xPercent: -40, yPercent: -20, duration: 7, ease: "sine.inOut" }, 0)
+
+            // ── Scrollytelling Master Timeline ──
+            const masterTL = gsap.timeline({
+                scrollTrigger: {
+                    trigger: stage,
+                    start: "top top",
+                    end: () => `+=${(numCards - 1) * 150}vh`,
+                    pin: pinContainer,
+                    scrub: 1,
+                    refreshPriority: 1, // Process second — after hero, before process-timeline
+                    invalidateOnRefresh: true,
+                    snap: {
+                        snapTo: "labelsDirectional",
+                        duration: { min: 0.3, max: 0.8 },
+                        ease: "power2.inOut"
+                    }
+                }
+            })
+
+            // We build the timeline out sequentially, index by index.
+            cards.forEach((card, i) => {
+                // Label marks the EXACT moment this card should be perfectly 100% focused
+                masterTL.addLabel(`card${i}`, i)
+
+                // If it's not the first card, it must dynamically enter and assemble from the stream
+                if (i > 0) {
+                    // Card Entrance (Condenses from liquid)
+                    masterTL.to(card, {
+                        opacity: 1,
+                        scale: 1,
+                        yPercent: 0,
+                        filter: "blur(0px)",
+                        duration: 0.4,
+                        ease: "power3.out",
+                        onStart: () => { gsap.set(card, { pointerEvents: "auto" }); },
+                        onReverseComplete: () => { gsap.set(card, { pointerEvents: "none" }); }
+                    }, i - 0.4)
+
+                    // Liquid Surge Color Morphing
+                    masterTL.to(b1, { backgroundColor: THEMES[i].b1, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
+                    masterTL.to(b2, { backgroundColor: THEMES[i].b2, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
+                    masterTL.to(b3, { backgroundColor: THEMES[i].b3, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
+                    masterTL.to(b4, { backgroundColor: THEMES[i].b4, duration: 0.5, ease: "power2.inOut" }, i - 0.5)
+
+                    // The "Eruption" — The plasma scales up violently as the transition happens
+                    masterTL.to(scaleLayer, {
+                        scale: 2.5,
+                        duration: 0.4,
+                        ease: "power2.in"
+                    }, i - 0.5)
+                    masterTL.to(scaleLayer, {
+                        scale: 1,
+                        duration: 0.4,
+                        ease: "power3.out"
+                    }, i - 0.1)
+                }
+
+                // Exiting: Ejecting the old card past the camera
+                if (i < numCards - 1) {
+                    masterTL.to(card, {
+                        opacity: 0,
+                        scale: 1.3, // Fly *past* the camera
+                        yPercent: -10, // Lift slightly
+                        filter: "blur(20px)", // Dissolve back into liquid
+                        duration: 0.4,
+                        ease: "power2.in",
+                        onComplete: () => { gsap.set(card, { pointerEvents: "none" }); }
+                    }, i + 0.1)
+                }
+            })
+
+        }, stage) // ← scoped to this section only
+
+        return () => ctx.revert() // Clean up only this section's GSAP instances
+    }, [viewport]) // Automatically rewrite timeline if screen resizes
+
     return (
-        <section className="relative bg-[var(--color-bg)] w-full py-24 md:py-32" id="services">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 mb-16 text-center">
-                <span className="inline-block px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-6">
+        <section className="relative bg-[#050505] w-full" id="services">
+            {/* SVG Defs for Gooey Liquid filter */}
+            <svg width="0" height="0" className="absolute hidden">
+                <filter id="liquid-goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -20" result="goo" />
+                    <feBlend in="SourceGraphic" in2="goo" />
+                </filter>
+            </svg>
+
+            {/* Section Heading — outside the trigger so it scrolls naturally before cards pin */}
+            <div className="pt-16 pb-4 w-full flex flex-col items-center justify-center text-center px-4 relative z-10">
+                <span className="inline-block px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-4 md:mb-6 shadow-sm">
                     Our Core Services
                 </span>
-                <h2 className="text-[clamp(3rem,6vw,5.5rem)] font-black tracking-tighter text-[var(--color-text)] leading-[1] uppercase">
-                    Built to{" "}
-                    <span
-                        className="bg-clip-text text-transparent"
-                        style={{ backgroundImage: "linear-gradient(90deg,var(--color-brand),var(--color-accent))" }}
-                    >
-                        Scale You
-                    </span>
+                <h2 className="text-[clamp(2.2rem,8vw,7rem)] font-black tracking-tighter text-white leading-[0.9] uppercase relative z-10">
+                    Built to<br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400">Scale You</span>
                 </h2>
             </div>
-            
-            <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 pb-[25vh] flex flex-col gap-[8vh] lg:gap-[12vh]">
-                {CARDS.map(({ id, Component }, i) => (
-                    <StickyCard key={id} index={i} total={CARDS.length}>
-                        <Component />
-                    </StickyCard>
-                ))}
-            </div>
-        </section>
-    )
-}
 
-function StickyCard({ index, total, children }: { index: number, total: number, children: React.ReactNode }) {
-    return (
-        <div 
-            className="sticky w-full h-[75vh] min-h-[600px] max-h-[850px] flex items-center justify-center transform-gpu"
-            style={{ 
-                top: `calc(10vh + ${index * 40}px)`, 
-                zIndex: index + 10 
-            }}
-        >
-            <motion.div 
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10%" }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full h-full origin-top"
-            >
-                {children}
-            </motion.div>
-        </div>
+            {/* The Cinematic Stage — trigger only wraps the pin area */}
+            <div ref={stageRef} className="relative w-full">
+                {/* 
+                    GSAP NATIVE PIN CONTAINER
+                    This div is locked by GSAP. ScrollTrigger handles the math automatically natively,
+                    eliminating CSS `sticky` desync or dead space trailing problems.
+                */}
+                <div ref={pinRef} className="w-full h-screen overflow-hidden flex items-center justify-center">
+
+                    {/* LIQUID DATA STREAM BACKGROUND */}
+                    {/* CSS URL filters liquefy the geometric DOM shapes inside */}
+                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-0" style={{ filter: 'url(#liquid-goo)' }}>
+                        <div ref={plasmaScaleLayer} className="relative w-full max-w-[500px] md:max-w-[800px] aspect-square">
+                            <div ref={plasmaSpinLayer} className="absolute inset-0">
+                                {/* The liquid droplets — high blur combined with SVG Gooey filter creates visceral fluid mechanics */}
+                                <div ref={blob1} className="absolute top-[10%] left-[20%] w-[50%] h-[50%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
+                                <div ref={blob2} className="absolute top-[40%] left-[50%] w-[60%] h-[60%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
+                                <div ref={blob3} className="absolute top-[50%] left-[10%] w-[50%] h-[50%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
+                                <div ref={blob4} className="absolute top-[20%] left-[40%] w-[55%] h-[55%] rounded-full mix-blend-screen blur-[20px] opacity-90" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Dark overlay to tame the liquid blob brightness and allow text readability on cards */}
+                    <div className="absolute inset-0 bg-[#050505]/30 pointer-events-none z-0" />
+
+                    {/* THE CARDS CONTAINER — responsive sizing */}
+                    <div className="relative w-[calc(100%-2rem)] max-w-[1200px] h-[75vh] sm:h-[80vh] md:h-auto md:aspect-[16/9] max-h-[85vh] z-10 mx-auto">
+                        {CARDS.map(({ Component, id }, i) => (
+                            <div
+                                key={id}
+                                ref={(el) => setCardRef(el, i)}
+                                // Every single card is pinned absolutely mathematically to the EXACT same layer.
+                                // We orchestrate who lives and dies via the GSAP Timeline opacity/scale.
+                                className="absolute inset-0 w-full h-full flex flex-col items-center justify-center transform-gpu will-change-transform pointer-events-auto"
+                            >
+                                <div className="w-full h-full p-0 sm:p-2 md:p-4 relative z-20">
+                                    <Component />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
     )
 }

@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils"
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { MagneticButton } from "@/components/ui/magnetic-button"
-import { ArrowRight, X, Menu } from "lucide-react"
+import { ArrowRight, X, Menu, ChevronDown } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 const services = [
     {
@@ -56,16 +57,18 @@ const workItems = [
         href: "/work",
         description: "View our latest projects and case studies",
     },
-    {
-        title: "Healthcare & Telemedicine",
-        href: "/work/healthcare-telemedicine",
-        description: "Web App & Cybersecurity Case Study",
-    },
 ]
 
 export function Header() {
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
+    const [expandedMobileCategory, setExpandedMobileCategory] = useState<string | null>(null)
+    const pathname = usePathname()
+
+    // Toggle logic for mobile accordions
+    const toggleMobileCategory = (category: string) => {
+        setExpandedMobileCategory(prev => prev === category ? null : category)
+    }
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20)
@@ -73,197 +76,263 @@ export function Header() {
         return () => window.removeEventListener("scroll", onScroll)
     }, [])
 
+    // Prevent body scrolling when mobile menu is open
+    useEffect(() => {
+        if (mobileOpen) {
+            document.body.style.overflow = "hidden"
+        } else {
+            document.body.style.overflow = "unset"
+        }
+
+        return () => {
+            document.body.style.overflow = "unset"
+        }
+    }, [mobileOpen])
+
+    if (pathname?.startsWith('/admin') || pathname?.startsWith('/login')) {
+        return null;
+    }
+
     return (
         <>
+            {/* Desktop / Core Floating Header */}
             <motion.header
-                initial={{ y: -100 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
-                    "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+                    "fixed z-50 transition-all duration-700 ease-out",
                     scrolled
-                        ? "bg-[var(--color-bg)]/80 backdrop-blur-xl border-b border-[var(--color-border)] shadow-[0_1px_3px_rgba(0,0,0,0.2)]"
-                        : "bg-transparent border-b border-transparent"
+                        ? "top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[1200px] rounded-full bg-[var(--color-bg)]/60 backdrop-blur-2xl border border-[var(--color-border)]/50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.05)]"
+                        : "top-0 left-0 right-0 w-full bg-transparent border-b border-transparent"
                 )}
             >
-                <Container>
-                    <div className="flex items-center justify-between h-[72px]">
-                        {/* Logo */}
-                        <Link
-                            href="/"
-                            className="flex items-center gap-3 group"
-                        >
-                            <img 
-                                src="https://res.cloudinary.com/dl4mlw1dl/image/upload/v1772485246/design-a-minimal--geometric-monogram-logo-that-sub_sicz5o.png" 
-                                alt="Scale Your Business Logo" 
-                                className="w-10 h-10 object-contain group-hover:scale-105 transition-transform duration-300"
+                <div className={cn(
+                    "mx-auto flex items-center justify-between",
+                    scrolled ? "h-[64px] px-6 md:px-8" : "h-[88px] px-6 max-w-7xl"
+                )}>
+                    {/* Logo Area */}
+                    <Link href="/" className="flex items-center gap-3 group shrink-0 relative z-10">
+                        <div className="relative w-10 h-10 flex flex-shrink-0 items-center justify-center">
+                            <img
+                                src="/SYB-logo-png.png"
+                                alt="SYB Logo"
+                                className="w-8 h-8 object-contain transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-5deg]"
                             />
-                            <span
-                                className={cn(
-                                    "text-xl font-black transition-colors duration-300 tracking-tighter uppercase",
-                                    scrolled ? "text-[var(--color-text)]" : "text-[var(--color-text)]"
-                                )}
-                            >
-                                Scale Your Business
-                            </span>
+                        </div>
+                        <span className="hidden sm:block text-lg font-black tracking-tighter uppercase text-[var(--color-text)] whitespace-nowrap">
+                            SYB
+                        </span>
+                    </Link>
+
+                    {/* Central Desktop Navigation */}
+                    <NavigationMenu className="hidden lg:flex lg:flex-1 lg:justify-center px-4">
+                        <NavigationMenuList className="gap-1 lg:gap-2">
+                            {/* Services Mega Menu */}
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger className="bg-transparent hover:bg-[var(--color-text)]/5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-semibold text-[12px] xl:text-[13px] uppercase tracking-widest rounded-full transition-colors h-10 px-3 xl:px-5">
+                                    Services
+                                </NavigationMenuTrigger>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[400px] gap-3 p-5 md:w-[500px] md:grid-cols-2 lg:w-[600px] rounded-3xl bg-[var(--color-bg)]/95 backdrop-blur-xl border border-[var(--color-border)]/50 shadow-2xl">
+                                        {services.map((service) => (
+                                            <ListItem key={service.title} title={service.title} href={service.href}>
+                                                {service.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+
+                            {/* Work/Portfolio Mega Menu */}
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger className="bg-transparent hover:bg-[var(--color-text)]/5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-semibold text-[12px] xl:text-[13px] uppercase tracking-widest rounded-full transition-colors h-10 px-3 xl:px-5">
+                                    Work
+                                </NavigationMenuTrigger>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[400px] gap-3 p-5 rounded-3xl bg-[var(--color-bg)]/95 backdrop-blur-xl border border-[var(--color-border)]/50 shadow-2xl">
+                                        {workItems.map((item) => (
+                                            <ListItem key={item.title} title={item.title} href={item.href}>
+                                                {item.description}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+
+                            {/* Direct Links */}
+                            {[{ title: "Blog", href: "/blog" }, { title: "Pricing", href: "/pricing" }, { title: "About", href: "/about" }, { title: "Contact", href: "/contact" }].map(link => (
+                                <NavigationMenuItem key={link.title}>
+                                    <NavigationMenuLink asChild>
+                                        <Link href={link.href} className="flex h-10 items-center justify-center rounded-full bg-transparent px-3 xl:px-5 text-[12px] xl:text-[13px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-text)]/5 hover:text-[var(--color-text)]">
+                                            {link.title}
+                                        </Link>
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                            ))}
+                        </NavigationMenuList>
+                    </NavigationMenu>
+
+                    {/* Right Side Actions */}
+                    <div className="flex items-center gap-4 shrink-0 relative z-10">
+                        <Link href="/contact" className="hidden lg:block">
+                            <MagneticButton>
+                                <Button className="h-10 rounded-full px-6 bg-[var(--color-text)] text-[var(--color-bg)] hover:bg-[var(--color-text)]/90 font-bold uppercase tracking-wider text-[11px] shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all">
+                                    Get Started
+                                </Button>
+                            </MagneticButton>
                         </Link>
 
-                        {/* Desktop Navigation */}
-                        <NavigationMenu className="hidden lg:block">
-                            <NavigationMenuList>
-                                {/* Services Mega Menu */}
-                                <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-medium text-sm">
-                                        Services
-                                    </NavigationMenuTrigger>
-                                    <NavigationMenuContent>
-                                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                                            {services.map((service) => (
-                                                <ListItem
-                                                    key={service.title}
-                                                    title={service.title}
-                                                    href={service.href}
-                                                >
-                                                    {service.description}
-                                                </ListItem>
-                                            ))}
-                                        </ul>
-                                    </NavigationMenuContent>
-                                </NavigationMenuItem>
-
-                                {/* Work/Portfolio Mega Menu */}
-                                <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)] font-medium text-sm">
-                                        Work
-                                    </NavigationMenuTrigger>
-                                    <NavigationMenuContent>
-                                        <ul className="grid w-[400px] gap-3 p-4">
-                                            {workItems.map((item) => (
-                                                <ListItem
-                                                    key={item.title}
-                                                    title={item.title}
-                                                    href={item.href}
-                                                >
-                                                    {item.description}
-                                                </ListItem>
-                                            ))}
-                                        </ul>
-                                    </NavigationMenuContent>
-                                </NavigationMenuItem>
-
-                                {/* Blog */}
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink asChild>
-                                        <Link href="/blog" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] focus:text-[var(--color-text)] focus:outline-none">
-                                            Blog
-                                        </Link>
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-
-                                {/* Pricing */}
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink asChild>
-                                        <Link href="/pricing" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] focus:text-[var(--color-text)] focus:outline-none">
-                                            Pricing
-                                        </Link>
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-
-                                {/* About */}
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink asChild>
-                                        <Link href="/about" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] focus:text-[var(--color-text)] focus:outline-none">
-                                            About
-                                        </Link>
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-                            </NavigationMenuList>
-                        </NavigationMenu>
-
-                        {/* CTA + Mobile */}
-                        <div className="flex items-center gap-3">
-                            <Link href="/contact" className="hidden sm:block">
-                                <MagneticButton>
-                                    <Button className="relative overflow-hidden group bg-[var(--color-brand)] hover:bg-[var(--color-brand-dark)] text-white px-6 shadow-[0_2px_20px_var(--glow-brand)] hover:shadow-[0_4px_30px_var(--glow-brand-strong)] transition-all duration-500">
-                                        <span className="relative z-10 flex items-center gap-2">
-                                            Get Started
-                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                                        </span>
-                                    </Button>
-                                </MagneticButton>
-                            </Link>
-                            <button
-                                onClick={() => setMobileOpen(!mobileOpen)}
-                                className="lg:hidden p-2 hover:bg-[var(--color-bg-soft)] rounded-xl transition-colors"
-                            >
-                                {mobileOpen ? (
-                                    <X className="w-6 h-6 text-[var(--color-text)]" />
-                                ) : (
-                                    <Menu className="w-6 h-6 text-[var(--color-text)]" />
-                                )}
-                            </button>
-                        </div>
+                        {/* Mobile Toggle Button (Morphing) */}
+                        <button
+                            onClick={() => setMobileOpen(!mobileOpen)}
+                            className="lg:hidden relative w-10 h-10 flex flex-col justify-center items-center gap-[5px] rounded-full bg-[var(--color-text)]/5 hover:bg-[var(--color-text)]/10 transition-colors border border-[var(--color-border)]/50"
+                        >
+                            <motion.span
+                                animate={{ rotate: mobileOpen ? 45 : 0, y: mobileOpen ? 7 : 0 }}
+                                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                className="w-5 h-[1.5px] bg-[var(--color-text)] rounded-full origin-center"
+                            />
+                            <motion.span
+                                animate={{ opacity: mobileOpen ? 0 : 1, width: mobileOpen ? 0 : 20 }}
+                                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                className="h-[1.5px] bg-[var(--color-text)] rounded-full"
+                            />
+                            <motion.span
+                                animate={{ rotate: mobileOpen ? -45 : 0, y: mobileOpen ? -7 : 0 }}
+                                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                className="w-5 h-[1.5px] bg-[var(--color-text)] rounded-full origin-center"
+                            />
+                        </button>
                     </div>
-                </Container>
+                </div>
             </motion.header>
 
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
+            {/* Premium Mobile Overlay Drawer */}
+            <AnimatePresence mode="wait">
                 {mobileOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-40 bg-[var(--color-bg)]/95 backdrop-blur-2xl pt-20 px-6 lg:hidden"
+                        initial={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
+                        animate={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)" }}
+                        exit={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)", transition: { delay: 0.2, duration: 0.5, ease: [0.76, 0, 0.24, 1] } }}
+                        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+                        className="fixed inset-0 z-40 bg-[var(--color-bg)] lg:hidden flex flex-col justify-start px-6 pt-32 pb-8 overflow-y-auto"
                     >
-                        <nav className="space-y-1">
-                            {services.map((s, i) => (
+                        {/* Ambient Glow */}
+                        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[var(--color-brand)]/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
+                        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[var(--color-brand)]/5 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/2" />
+
+                        <nav className="relative z-10 flex flex-col w-full max-w-md mx-auto h-full">
+                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-[var(--color-text-muted)] mb-8 block ml-2">Navigation</span>
+
+                            <div className="flex-1 flex flex-col gap-2">
+                                {/* Services Category */}
                                 <motion.div
-                                    key={s.title}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.05 }}
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.1, duration: 0.5 }}
+                                    className="border-b border-[var(--color-border)]/40 overflow-hidden"
                                 >
-                                    <Link
-                                        href={s.href}
-                                        onClick={() => setMobileOpen(false)}
-                                        className="block py-3 text-lg font-medium text-[var(--color-text)] hover:text-[var(--color-brand)] transition-colors border-b border-[var(--color-border)]"
+                                    <button
+                                        onClick={() => toggleMobileCategory('services')}
+                                        className="w-full flex items-center justify-between py-5 px-2 group"
                                     >
-                                        {s.title}
-                                    </Link>
+                                        <span className="text-3xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">Services</span>
+                                        <ChevronDown className={cn("w-6 h-6 text-[var(--color-text-secondary)] transition-transform duration-300", expandedMobileCategory === 'services' && "rotate-180")} />
+                                    </button>
+                                    <AnimatePresence>
+                                        {expandedMobileCategory === 'services' && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="px-4 pb-6 flex flex-col gap-5 pt-2"
+                                            >
+                                                {services.map(item => (
+                                                    <Link key={item.title} href={item.href} onClick={() => setMobileOpen(false)} className="group/item">
+                                                        <div className="text-lg font-semibold text-[var(--color-text)] group-hover/item:text-[var(--color-brand)] transition-colors">{item.title}</div>
+                                                        <div className="text-[13px] text-[var(--color-text-secondary)] mt-1">{item.description}</div>
+                                                        <div className="w-0 h-px bg-[var(--color-brand)] mt-2 group-hover/item:w-12 transition-all duration-300" />
+                                                    </Link>
+                                                ))}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </motion.div>
-                            ))}
-                            {[
-                                { title: "Portfolio", href: "/work" },
-                                { title: "Blog", href: "/blog" },
-                                { title: "Pricing", href: "/pricing" },
-                                { title: "About", href: "/about" },
-                            ].map((item, i) => (
+
+                                {/* Work Category */}
                                 <motion.div
-                                    key={item.title}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: (services.length + i) * 0.05 }}
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.15, duration: 0.5 }}
+                                    className="border-b border-[var(--color-border)]/40 overflow-hidden"
                                 >
-                                    <Link
-                                        href={item.href}
-                                        onClick={() => setMobileOpen(false)}
-                                        className="block py-3 text-lg font-medium text-[var(--color-text)] hover:text-[var(--color-brand)] transition-colors border-b border-[var(--color-border)]"
+                                    <button
+                                        onClick={() => toggleMobileCategory('work')}
+                                        className="w-full flex items-center justify-between py-5 px-2 group"
                                     >
-                                        {item.title}
-                                    </Link>
+                                        <span className="text-3xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">Work</span>
+                                        <ChevronDown className={cn("w-6 h-6 text-[var(--color-text-secondary)] transition-transform duration-300", expandedMobileCategory === 'work' && "rotate-180")} />
+                                    </button>
+                                    <AnimatePresence>
+                                        {expandedMobileCategory === 'work' && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="px-4 pb-6 flex flex-col gap-5 pt-2"
+                                            >
+                                                {workItems.map(item => (
+                                                    <Link key={item.title} href={item.href} onClick={() => setMobileOpen(false)} className="group/item">
+                                                        <div className="text-lg font-semibold text-[var(--color-text)] group-hover/item:text-[var(--color-brand)] transition-colors">{item.title}</div>
+                                                        <div className="text-[13px] text-[var(--color-text-secondary)] mt-1">{item.description}</div>
+                                                        <div className="w-0 h-px bg-[var(--color-brand)] mt-2 group-hover/item:w-12 transition-all duration-300" />
+                                                    </Link>
+                                                ))}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </motion.div>
-                            ))}
+
+                                {/* Direct Links */}
+                                {[
+                                    { title: "About Us", href: "/about" },
+                                    { title: "Insights & Blog", href: "/blog" },
+                                    { title: "Pricing Plans", href: "/pricing" },
+                                    { title: "Contact Us", href: "/contact" }
+                                ].map((item, idx) => (
+                                    <motion.div
+                                        key={item.title}
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 0.2 + (idx * 0.05), duration: 0.5 }}
+                                        className="border-b border-[var(--color-border)]/40"
+                                    >
+                                        <Link
+                                            href={item.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            className="w-full flex items-center justify-between py-5 px-2 group"
+                                        >
+                                            <span className="text-2xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">{item.title}</span>
+                                            <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-[var(--color-brand)]" />
+                                        </Link>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            {/* Mobile CTA */}
                             <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                                className="pt-6"
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4, duration: 0.5 }}
+                                className="mt-8 pb-8"
                             >
                                 <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                                    <Button className="w-full bg-[var(--color-brand)] hover:bg-[var(--color-brand-dark)] text-white shadow-[0_2px_20px_var(--glow-brand)]" size="lg">
-                                        Get Started
+                                    <Button className="w-full h-14 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-bold uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(255,255,255,0.1)] group">
+                                        Let's Build Together
+                                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </Link>
                             </motion.div>

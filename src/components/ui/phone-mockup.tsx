@@ -91,7 +91,7 @@ export function MockupPhilosophyUI() {
                     <div
                         key={i}
                         className="bg-[var(--color-text)]/10 rounded-full w-[3px]"
-                        style={{ height: `${20 + Math.sin(i * 0.5) * 60 + Math.random() * 20}%` }}
+                        style={{ height: `${(20 + Math.sin(i * 0.5) * 60 + ((Math.sin(i * 4.3) + 1) * 10)).toFixed(2)}%` }}
                     />
                 ))}
             </div>

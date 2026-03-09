@@ -4,6 +4,22 @@ import React, { useRef } from "react"
 import { motion, useScroll, useTransform } from "motion/react"
 import { Container } from "@/components/ui/container"
 import { ArrowUpRight } from "lucide-react"
+import dynamic from "next/dynamic"
+
+const DigitalFoundationsScene = dynamic(
+    () => import("./digital-foundations-scene").then(m => m.DigitalFoundationsScene),
+    { ssr: false, loading: () => <div className="w-full h-full bg-[#fafafa] animate-pulse rounded-2xl" /> }
+)
+
+const KnowledgeAbsorptionScene = dynamic(
+    () => import("./knowledge-absorption-scene").then(m => m.KnowledgeAbsorptionScene),
+    { ssr: false, loading: () => <div className="w-full h-full bg-[#fafafa] animate-pulse rounded-2xl" /> }
+)
+
+const FrictionEliminationScene = dynamic(
+    () => import("./friction-elimination-scene").then(m => m.FrictionEliminationScene),
+    { ssr: false, loading: () => <div className="w-full h-full bg-[#fafafa] animate-pulse rounded-2xl" /> }
+)
 
 type CaseStudy = {
     id: string;
@@ -75,7 +91,7 @@ function CaseStudyRow({ study, index }: { study: CaseStudy, index: number }) {
             style={{ scale, opacity }}
             className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-12 lg:gap-20 py-20 lg:py-32 group border-b border-[var(--color-border)] last:border-0`}
         >
-            {/* Image Container with Parallax Hover */}
+            {/* Image / 3D Scene Container */}
             <div className="w-full lg:w-1/2 relative">
                 <div className="aspect-[4/3] lg:aspect-[16/10] w-full rounded-2xl overflow-hidden relative">
                     {/* The glowing underlay */}
@@ -85,16 +101,32 @@ function CaseStudyRow({ study, index }: { study: CaseStudy, index: number }) {
                         className="w-full h-full relative z-10 overflow-hidden rounded-2xl border border-[var(--color-border)]"
                         whileHover="hover"
                     >
-                        <motion.img
-                            src={study.image}
-                            alt={study.title}
-                            className="w-full h-full object-cover origin-center bg-[var(--color-bg-card)]"
-                            variants={{
-                                hover: { scale: 1.05 }
-                            }}
-                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60" />
+                        {study.id === "amrapali" ? (
+                            <div className="w-full h-full bg-[#fafafa]">
+                                <DigitalFoundationsScene />
+                            </div>
+                        ) : study.id === "edtech" ? (
+                            <div className="w-full h-full bg-[#fafafa]">
+                                <KnowledgeAbsorptionScene />
+                            </div>
+                        ) : study.id === "agency" ? (
+                            <div className="w-full h-full bg-[#fafafa]">
+                                <FrictionEliminationScene />
+                            </div>
+                        ) : (
+                            <>
+                                <motion.img
+                                    src={study.image}
+                                    alt={study.title}
+                                    className="w-full h-full object-cover origin-center bg-[var(--color-bg-card)]"
+                                    variants={{
+                                        hover: { scale: 1.05 }
+                                    }}
+                                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60" />
+                            </>
+                        )}
                     </motion.div>
                 </div>
             </div>

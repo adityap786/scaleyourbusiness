@@ -7,7 +7,7 @@ import { TechStackCarousel } from "@/components/ui/tech-stack-carousel"
 import { motion } from "framer-motion"
 import { FAQAccordion } from "@/components/ui/faq-accordion"
 import { WarpBackground } from "@/components/ui/warp-background"
-import { AIAutomationHero } from "@/components/services/ai-automation-hero"     
+import { AIAutomationHero } from "@/components/services/ai-automation-hero"
 import { AestheticTestimonials } from "@/components/ui/aesthetic-testimonials"
 import Link from "next/link"
 
@@ -63,8 +63,25 @@ function FadeReveal({ children, className = "", delay = 0 }: { children: React.R
 }
 
 export function AIAutomationContent() {
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer
+            }
+        }))
+    }
+
     return (
         <div className="bg-[var(--color-bg)] text-[var(--color-text)]">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
             {/* ── Section 1: Original Hero (Preserved but Improved Typographically) ── */}
             <WarpBackground
                 className="pt-40 pb-20 border-0 rounded-none bg-[var(--color-bg)] overflow-hidden"
@@ -100,6 +117,12 @@ export function AIAutomationContent() {
                                 Transform your business with intelligent agents that qualify leads, automate campaigns, and execute complex workflows without human intervention.
                             </p>
                         </FadeReveal>
+
+                        <FadeReveal delay={0.35}>
+                            <div className="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto mt-6 font-medium">
+                                <p><strong className="text-white/70">Scale Your Business</strong> is a leading AI automation agency in India. We help enterprises across Mumbai, Delhi, and Bangalore automate workflows, build custom AI chatbots, and deploy intelligent operational systems.</p>
+                            </div>
+                        </FadeReveal>
                     </div>
                 </Container>
             </WarpBackground>
@@ -109,7 +132,7 @@ export function AIAutomationContent() {
 
             {/* Tech Stack Carousel */}
             <div className="py-20 border-y border-[var(--color-border)] bg-[var(--color-bg-soft)]">
-                 <TechStackCarousel />
+                <TechStackCarousel />
             </div>
 
             {/* ── Section 3: Core Products (Architectural Showcase) ── */}
@@ -156,7 +179,7 @@ export function AIAutomationContent() {
                                     </div>
                                 </div>
                             </FadeReveal>
-                            
+
                             <div className="pt-12 md:pt-24 md:pl-8">
                                 <FadeReveal delay={0.2}>
                                     <div className="text-[11px] font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-6">HOW IT WORKS</div>
@@ -173,7 +196,7 @@ export function AIAutomationContent() {
                                 <FadeReveal delay={0.2}>
                                     <div className="text-[11px] font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-6">BEHAVIORAL TRIGGERS</div>
                                     <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed mb-8">
-                                        Instead of blasting blind campaigns, our AI reacts to real-time user behavior. 
+                                        Instead of blasting blind campaigns, our AI reacts to real-time user behavior.
                                     </p>
                                     <div className="space-y-6 flex flex-col pt-4 border-t border-[var(--color-border)]">
                                         {[
@@ -222,7 +245,7 @@ export function AIAutomationContent() {
                 <div className="absolute inset-0 noise-overlay opacity-[0.05] pointer-events-none" />
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-brand)]/10 rounded-full blur-[120px] pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
-                
+
                 <Container className="relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-center">
                         <div>
@@ -240,7 +263,7 @@ export function AIAutomationContent() {
                                     Logistics routing? Document parsing? Custom internal HR tools? We build specialized AI operations from the ground up for niche opportunities that off-the-shelf software can't handle.
                                 </p>
                                 <Link href="/contact">
-                                    <motion.button 
+                                    <motion.button
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         className="h-16 px-8 bg-[var(--color-brand)] text-white font-bold flex items-center gap-3 transition-colors hover:shadow-[0_0_40px_var(--glow-brand-strong)]"
@@ -251,11 +274,11 @@ export function AIAutomationContent() {
                                 </Link>
                             </FadeReveal>
                         </div>
-                        
+
                         <FadeReveal delay={0.4}>
                             <div className="border border-white/10 p-8 md:p-12 relative group backdrop-blur-md bg-white/[0.02]">
                                 <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--color-brand)] to-transparent opacity-50" />
-                                
+
                                 <h3 className="text-xl font-bold mb-8 text-white">Recent Custom Implementations</h3>
                                 <div className="space-y-8">
                                     {[
@@ -301,6 +324,26 @@ export function AIAutomationContent() {
                         </div>
                         <div>
                             <FAQAccordion items={faqs} />
+                        </div>
+                    </div>
+                </Container>
+            </section>
+
+            {/* ─── INTERNAL LINKS ───────────────────────────────────────── */}
+            <section className="py-16 bg-[#FAFAFA] border-y border-[var(--color-border)]">
+                <Container>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tight">Scale Further</h3>
+                            <p className="text-gray-500 max-w-xl">Complement your AI systems with a custom SaaS dashboard or secure them with our testing services.</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <Link href="/saas-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                SaaS Platform <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/cybersecurity" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                Cyber Security <ArrowRight className="w-4 h-4" />
+                            </Link>
                         </div>
                     </div>
                 </Container>

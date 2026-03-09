@@ -6,8 +6,7 @@ import Link from "next/link"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { motion, useScroll, useTransform } from "motion/react"
 import { useRef } from "react"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+
 
 interface CaseStudyLayoutProps {
     title: string
@@ -44,15 +43,14 @@ export function CaseStudyLayout({
 
     return (
         <div className="bg-[#f0f0f0] min-h-screen text-black font-sans selection:bg-black selection:text-white" ref={containerRef}>
-            <Header />
-            
+
             {/* Cinematic Hero Header */}
-            <motion.div 
+            <motion.div
                 className="relative pt-40 pb-20 overflow-hidden bg-[#f0f0f0]"
                 style={{ y: headerY, opacity: opVal }}
             >
-                <div className="absolute inset-0 pointer-events-none z-0 mix-blend-multiply opacity-[0.03]" 
-                     style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}>
+                <div className="absolute inset-0 pointer-events-none z-0 mix-blend-multiply opacity-[0.03]"
+                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}>
                 </div>
 
                 <Container>
@@ -60,9 +58,9 @@ export function CaseStudyLayout({
                         <ArrowLeft className="w-5 h-5 mr-3 group-hover:-translate-x-2 transition-transform" />
                         Back to Work
                     </Link>
-                    
+
                     <div className="relative z-10 max-w-6xl">
-                        <motion.h1 
+                        <motion.h1
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -70,7 +68,7 @@ export function CaseStudyLayout({
                         >
                             {title}
                         </motion.h1>
-                        <motion.div 
+                        <motion.div
                             initial={{ x: -30, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -115,16 +113,44 @@ export function CaseStudyLayout({
             <div className="relative bg-white pt-24 pb-32">
                 <Container>
                     <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 relative">
-                        
-                        {/* Main Reading Flow */}
-                        <div className="lg:col-span-8 group prose prose-lg md:prose-xl max-w-none text-black/80 
-                            prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-black 
-                            prose-h2:text-4xl md:prose-h2:text-5xl prose-h2:mt-16 prose-h2:mb-8 prose-h2:border-b-4 prose-h2:border-[#3b82f6] prose-h2:pb-4 prose-h2:inline-block
-                            prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:mt-12 prose-h3:mb-6
-                            prose-p:leading-relaxed prose-p:font-medium prose-p:mb-8
-                            prose-strong:font-black prose-strong:text-black
-                            prose-ul:list-none prose-ul:pl-0 prose-li:relative prose-li:pl-6 prose-li:mb-4
-                            prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[12px] prose-li:before:w-2 prose-li:before:h-2 prose-li:before:bg-[#3b82f6]
+
+                        {/* Main Reading Flow — Premium Editorial Typography */}
+                        <div className="lg:col-span-8 group
+                            prose prose-lg md:prose-xl max-w-none
+                            text-black/75 leading-[1.8]
+
+                            prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-black prose-headings:leading-[1.1]
+
+                            prose-h2:text-3xl prose-h2:sm:text-4xl md:prose-h2:text-5xl
+                            prose-h2:mt-20 prose-h2:mb-10
+                            prose-h2:relative prose-h2:pl-6
+                            prose-h2:before:content-[''] prose-h2:before:absolute prose-h2:before:left-0 prose-h2:before:top-0 prose-h2:before:bottom-0 prose-h2:before:w-[4px] prose-h2:before:bg-[#3b82f6] prose-h2:before:rounded-full
+
+                            prose-h3:text-xl prose-h3:sm:text-2xl md:prose-h3:text-3xl
+                            prose-h3:mt-14 prose-h3:mb-6
+                            prose-h3:text-black/90
+                            prose-h3:border-b prose-h3:border-black/10 prose-h3:pb-4
+
+                            prose-p:text-base prose-p:md:text-lg
+                            prose-p:leading-[1.85] prose-p:font-medium prose-p:mb-6
+                            prose-p:text-black/70
+
+                            prose-strong:font-extrabold prose-strong:text-black
+
+                            prose-ul:list-none prose-ul:pl-0 prose-ul:my-8 prose-ul:space-y-4
+                            prose-li:relative prose-li:pl-8 prose-li:text-base prose-li:md:text-lg prose-li:leading-[1.8] prose-li:text-black/70
+                            prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[11px]
+                            prose-li:before:w-[6px] prose-li:before:h-[6px] prose-li:before:rounded-full prose-li:before:bg-[#3b82f6]
+                            prose-li:before:ring-[3px] prose-li:before:ring-[#3b82f6]/20
+
+                            prose-blockquote:border-l-4 prose-blockquote:border-[#3b82f6] prose-blockquote:bg-[#f8fafc]
+                            prose-blockquote:py-6 prose-blockquote:px-8 prose-blockquote:rounded-r-lg
+                            prose-blockquote:text-black/80 prose-blockquote:font-semibold prose-blockquote:italic
+                            prose-blockquote:not-italic prose-blockquote:my-10
+
+                            prose-img:rounded-lg prose-img:shadow-xl prose-img:my-12
+
+                            [&>*:first-child]:mt-0
                         ">
                             {children}
                         </div>
@@ -132,13 +158,13 @@ export function CaseStudyLayout({
                         {/* Staggered Sidebar Elements */}
                         <div className="lg:col-span-4 relative">
                             <div className="sticky top-40 space-y-16">
-                                
+
                                 {/* Metrics Node */}
                                 <div>
                                     <h3 className="text-sm font-black uppercase tracking-widest text-[#3b82f6] border-b-2 border-black/10 pb-4 mb-8">Key Impact</h3>
                                     <div className="space-y-10">
                                         {metrics.map((metric, i) => (
-                                            <motion.div 
+                                            <motion.div
                                                 key={i}
                                                 initial={{ opacity: 0, x: 20 }}
                                                 whileInView={{ opacity: 1, x: 0 }}
@@ -182,7 +208,7 @@ export function CaseStudyLayout({
                 </Link>
             )}
 
-            <Footer />
+
         </div>
     )
 }

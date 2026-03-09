@@ -1,8 +1,7 @@
 "use client"
 
 import { Container } from "@/components/ui/container"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
+import Link from "next/link"
 import { Heart, Users, Zap, Target } from "lucide-react"
 import { motion, useScroll, useTransform } from "motion/react"
 import { useRef } from "react"
@@ -23,22 +22,21 @@ export default function AboutPage() {
         <div className="bg-[#f0f0f0] selection:bg-black selection:text-white" ref={containerRef}>
             <Head>
                 <title>About Us | Scale Your Business</title>
-                <meta name="description" content="Meet the team dedicated to scaling your business. Founded by best friends Atharva Tripathi & Aditya Pandit." />
+                <meta name="description" content="Meet the team dedicated to scaling your business. Founded by best friends Atharv Tripathi & Aditya Pandit." />
             </Head>
-            <Header />
-            
+
             <main className="relative w-full z-10">
                 {/* Anti-Template Hero */}
-                <motion.section 
+                <motion.section
                     className="sticky top-0 h-[100vh] min-h-[850px] flex flex-col items-center justify-center pt-32 pb-24 p-6 md:p-12 overflow-hidden bg-[#f0f0f0]"
                     style={{ scale: heroScale, opacity: heroOpacity, y: heroY }}
                 >
-                    <div className="absolute inset-0 pointer-events-none z-0" 
-                         style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.04%22/%3E%3C/svg%3E")' }}>
+                    <div className="absolute inset-0 pointer-events-none z-0"
+                        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.04%22/%3E%3C/svg%3E")' }}>
                     </div>
 
                     <div className="relative z-10 max-w-6xl mx-auto text-center w-full mt-4 md:mt-12">
-                        <motion.h1 
+                        <motion.h1
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
@@ -49,7 +47,7 @@ export default function AboutPage() {
                             Just A <span className="text-[#3b82f6] italic">Business</span>
                         </motion.h1>
 
-                        <motion.div 
+                        <motion.div
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -69,9 +67,9 @@ export default function AboutPage() {
                 <section className="relative bg-black text-white pt-48 pb-32 z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
                     <Container>
                         <div className="grid md:grid-cols-2 gap-24 max-w-6xl mx-auto">
-                            
-                            {/* Atharva */}
-                            <motion.div 
+
+                            {/* Atharv */}
+                            <motion.div
                                 initial={{ opacity: 0, x: -50 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ margin: "-100px", once: true }}
@@ -80,21 +78,23 @@ export default function AboutPage() {
                             >
                                 <div className="absolute top-8 -left-8 w-full h-full bg-[#111] z-0 transform group-hover:-translate-x-4 group-hover:translate-y-4 transition-transform duration-700 ease-out border border-white/5" />
                                 <div className="relative z-10 aspect-[3/4] bg-white/5 border border-white/10 overflow-hidden flex flex-col justify-end p-8 transform-style-3d transition-transform duration-700 ease-out group-hover:rotate-y-[-5deg] group-hover:rotate-x-[5deg]">
-                                    
+
                                     {/* Placeholder specific image layer */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
-                                    <img src="/team/atharva.jpg" alt="Atharva Tripathi" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
-                                    
+                                    <img src="/team/atharva.jpg" alt="Atharv Tripathi" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
+
                                     <div className="relative z-20 translate-z-10">
                                         <div className="w-12 h-[2px] bg-[#3b82f6] mb-4 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 delay-100" />
-                                        <h3 className="text-4xl font-black uppercase tracking-tighter mb-1">Atharva Tripathi</h3>
+                                        <Link href="/founder/atharv-tripathi" className="hover:text-[#3b82f6] transition-colors inline-block mt-1">
+                                            <h3 className="text-4xl font-black uppercase tracking-tighter mb-1">Atharv Tripathi</h3>
+                                        </Link>
                                         <p className="text-white/60 font-mono text-sm tracking-widest uppercase">Founder</p>
                                     </div>
                                 </div>
                             </motion.div>
 
                             {/* Aditya */}
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, x: 50 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ margin: "-100px", once: true }}
@@ -103,13 +103,15 @@ export default function AboutPage() {
                             >
                                 <div className="absolute top-8 -left-8 w-full h-full bg-[#111] z-0 transform group-hover:-translate-x-4 group-hover:translate-y-4 transition-transform duration-700 ease-out border border-white/5" />
                                 <div className="relative z-10 aspect-[3/4] bg-white/5 border border-white/10 overflow-hidden flex flex-col justify-end p-8 transform-style-3d transition-transform duration-700 ease-out group-hover:rotate-y-[5deg] group-hover:rotate-x-[5deg]">
-                                    
+
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
-                                    <img src="/team/aditya.jpg" alt="Aditya Pandit" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
-                                    
+                                    <img src="/team/aditya-founder.jpg" alt="Aditya Pandit" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700 grayscale group-hover:grayscale-0" />
+
                                     <div className="relative z-20 translate-z-10">
                                         <div className="w-12 h-[2px] bg-[#3b82f6] mb-4 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 delay-100" />
-                                        <h3 className="text-4xl font-black uppercase tracking-tighter mb-1">Aditya Pandit</h3>
+                                        <Link href="/founder/aditya-pandit" className="hover:text-[#3b82f6] transition-colors inline-block mt-1">
+                                            <h3 className="text-4xl font-black uppercase tracking-tighter mb-1">Aditya Pandit</h3>
+                                        </Link>
                                         <p className="text-white/60 font-mono text-sm tracking-widest uppercase">Co-Founder</p>
                                     </div>
                                 </div>
@@ -118,7 +120,7 @@ export default function AboutPage() {
 
                         {/* Origin Story Text */}
                         <div className="max-w-4xl mx-auto mt-40">
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, margin: "-100px" }}
@@ -128,7 +130,7 @@ export default function AboutPage() {
                                 <span className="font-mono text-sm tracking-[0.2em] uppercase text-white/50">Best Friends for 5+ Years</span>
                             </motion.div>
 
-                            <motion.p 
+                            <motion.p
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true, margin: "-100px" }}
@@ -136,8 +138,8 @@ export default function AboutPage() {
                             >
                                 Our story starts long before Scale Your Business. We've been friends for over 5 years, sharing a common vision: <span className="font-bold text-white">to create value that actually matters.</span>
                             </motion.p>
-                            
-                            <motion.p 
+
+                            <motion.p
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true, margin: "-100px" }}
@@ -153,7 +155,7 @@ export default function AboutPage() {
                 <section className="relative bg-white py-32 md:py-48 z-10 isolate">
                     <Container>
                         <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
-                            
+
                             <div className="lg:col-span-5 flex flex-col justify-center">
                                 <motion.div
                                     initial={{ opacity: 0, x: -50 }}
@@ -162,7 +164,7 @@ export default function AboutPage() {
                                     className="sticky top-32"
                                 >
                                     <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-12">
-                                        Grateful <br/><span className="text-[#3b82f6]">& Blessed</span>
+                                        Grateful <br /><span className="text-[#3b82f6]">& Blessed</span>
                                     </h2>
                                     <div className="space-y-6 text-xl text-black/70 font-light leading-relaxed">
                                         <p>
@@ -180,17 +182,17 @@ export default function AboutPage() {
 
                             <div className="lg:col-span-7 flex justify-end">
                                 <div className="w-full max-w-2xl space-y-8">
-                                    <ValueNode 
+                                    <ValueNode
                                         icon={<Zap className="w-8 h-8" />}
                                         title="Streamlined Operations"
                                         desc="We optimize your workflows, lead qualification, and nurturing processes to save you time."
                                     />
-                                    <ValueNode 
+                                    <ValueNode
                                         icon={<Target className="w-8 h-8" />}
                                         title="Value-Driven Campaigns"
                                         desc="Marketing that focuses on delivering real value to your customers, not just noise."
                                     />
-                                    <ValueNode 
+                                    <ValueNode
                                         icon={<Heart className="w-8 h-8" />}
                                         title="Building Bonds"
                                         desc="We work with you, not just for you. We support you in your journey as partners."
@@ -201,21 +203,20 @@ export default function AboutPage() {
                     </Container>
                 </section>
             </main>
-            <Footer />
         </div>
     )
 }
 
 function ValueNode({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             className="group relative p-10 bg-[#fafafa] border border-black/5 hover:border-black/20 transition-colors duration-500 overflow-hidden"
         >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#3b82f6] scale-y-0 origin-bottom transition-transform duration-500 ease-out group-hover:scale-y-100" />
-            
+
             <div className="text-black/30 group-hover:text-[#3b82f6] transition-colors duration-500 mb-8 pl-4">
                 {icon}
             </div>

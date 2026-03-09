@@ -6,6 +6,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { SmoothScrollProvider } from "@/components/ui/smooth-scroll-provider";
+import { PreloaderProvider } from "@/components/ui/preloader-provider";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -52,6 +55,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://scaleyourbusiness.online",
   },
+  icons: {
+    icon: "/SYB-favicon.svg",
+    shortcut: "/SYB-favicon.svg",
+    apple: "/SYB-favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -83,13 +91,19 @@ export default function RootLayout({
 }>) {
   const organizationSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': ['Organization', 'ProfessionalService'],
     'name': 'Scale Your Business',
     'alternateName': 'SYB Agency',
     'url': 'https://scaleyourbusiness.online',
-    'logo': 'https://scaleyourbusiness.online/logo.png',
-    'description': 'We build websites, apps, AI automations, SaaS products, and brand strategy for startup founders in India, Dubai, and the US. Over 30 brands scaled.',
+    'logo': 'https://scaleyourbusiness.online/SYB-logo-dark-theme-1.png',
+    'image': 'https://scaleyourbusiness.online/og-image.jpg',
+    'description': 'Scale Your Business is a leading digital infrastructure agency in India specializing in software, automation, and digital growth systems for startups and enterprises across Delhi, Mumbai, Bangalore, and Hyderabad.',
     'areaServed': ['IN', 'AE', 'US'],
+    'address': {
+      '@type': 'PostalAddress',
+      'addressCountry': 'IN'
+    },
+    'priceRange': '$$$',
     'sameAs': [
       'https://www.linkedin.com/company/scaleyourbusiness',
       'https://clutch.co/profile/scale-your-business',
@@ -103,16 +117,20 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={cn(inter.variable, dmSans.variable, "antialiased")}>
+    <html lang="en" suppressHydrationWarning className={cn(inter.variable, dmSans.variable, "antialiased")}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
-      <body className="bg-[var(--color-bg)] text-[var(--color-text)] font-body min-h-screen selection:bg-[var(--color-brand)] selection:text-white">
+      <body suppressHydrationWarning className="bg-[var(--color-bg)] text-[var(--color-text)] font-body min-h-screen selection:bg-[var(--color-brand)] selection:text-white">
         <SmoothScrollProvider>
-          {children}
+          <PreloaderProvider>
+            <Header />
+            {children}
+            <Footer />
+          </PreloaderProvider>
         </SmoothScrollProvider>
         <WhatsAppButton />
         <Analytics />

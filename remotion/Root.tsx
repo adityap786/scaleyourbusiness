@@ -14,6 +14,11 @@ import { NetworkScanNode } from "./compositions/NetworkScanNode";
 import { PhishingSimulation } from "./compositions/PhishingSimulation";
 import { SaasDashboardPreview } from "./compositions/SaasDashboardPreview";
 
+import { AppDevPhase1 } from "./compositions/AppDevPhase1";
+import { AppDevPhase2 } from "./compositions/AppDevPhase2";
+import { AppDevPhase3 } from "./compositions/AppDevPhase3";
+import { AppDevPhase4 } from "./compositions/AppDevPhase4";
+
 export const RemotionRoot = () => {
   return (
     <>
@@ -124,6 +129,40 @@ export const RemotionRoot = () => {
         fps={30}
         width={480}
         height={420}
+      />
+
+      {/* App Dev Horizontal Process Compositions */}
+      <Composition
+        id="AppDevPhase1"
+        component={AppDevPhase1}
+        durationInFrames={360}
+        fps={30}
+        width={480}
+        height={480}
+      />
+      <Composition
+        id="AppDevPhase2"
+        component={AppDevPhase2}
+        durationInFrames={360}
+        fps={30}
+        width={480}
+        height={480}
+      />
+      <Composition
+        id="AppDevPhase3"
+        component={AppDevPhase3}
+        durationInFrames={360}
+        fps={30}
+        width={480}
+        height={480}
+      />
+      <Composition
+        id="AppDevPhase4"
+        component={AppDevPhase4}
+        durationInFrames={360}
+        fps={30}
+        width={480}
+        height={480}
       />
     </>
   );

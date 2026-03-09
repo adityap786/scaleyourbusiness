@@ -1,19 +1,16 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Metadata } from "next"
 import { WebDevContent } from "@/components/services/web-dev-content"
 
 export const metadata: Metadata = {
-    title: "Website Development | Next.js, Shopify, Wix Studio & More",
-    description: "We build custom Next.js websites, Shopify stores, and Wix Studio sites. From affordable custom coding to enterprise-grade admin panels.",
+    title: "Best Website Development Company India | Next.js & Custom Sites",
+    description: "Scale Your Business is a leading website development agency in India. We build high-performance, custom websites using Next.js, Shopify, and Wix Studio for startups and enterprises.",
+    keywords: "website development company India, best website design agency India, Next.js website development agency, high performance websites India, custom website development India, Scale Your Business",
 }
 
 export default function WebsiteDevelopmentPage() {
     return (
         <>
-            <Header />
             <WebDevContent />
-            <Footer />
         </>
     )
 }

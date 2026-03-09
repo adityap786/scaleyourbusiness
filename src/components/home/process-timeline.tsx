@@ -1,157 +1,409 @@
 "use client"
 
 import { Container } from "@/components/ui/container"
-import { motion, useScroll, useTransform } from "motion/react"
-import { useRef } from "react"
+import React, { useEffect, useRef } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+// Register at module level — exactly like service-scroll-stack.tsx
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger)
+}
 
 const steps = [
     {
         id: "01",
         title: "Discovery",
-        subtitle: "We learn your business, audience, pain points, and goals. Then we craft a clear roadmap.",
+        subtitle: "We analyze your business, audience, pain points, and target ROI. We craft the absolute trajectory of your success.",
     },
     {
         id: "02",
         title: "Design",
-        subtitle: "High-fidelity mockups and prototypes. You see exactly what you'll get before a single line of code.",
+        subtitle: "High-fidelity mockups and unignorable brand archetypes. You see the exact psychological impact before we code.",
     },
     {
         id: "03",
         title: "Develop",
-        subtitle: "Production-grade code built with modern frameworks. No shortcuts, no compromises.",
+        subtitle: "Production-grade, blazing-fast logic built on modern tech stacks. We engineer without shortcuts or compromises.",
     },
     {
         id: "04",
         title: "Launch & Scale",
-        subtitle: "We deploy, monitor, optimize, and help you scale. We're with you for the journey.",
+        subtitle: "The product deploys. We monitor, optimize, and flood your funnels. Your desired end-state becomes reality.",
     },
 ]
 
-export function ProcessTimeline() {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start center", "end center"],
-    })
+// ── 4 Stickman SVG Poses ──
+// Each pose changes as the user scrolls through the 4 steps
+const StickmanPose = ({ pose }: { pose: number }) => {
+    // All poses share: head, body spine, hoverboard
+    // Arms and legs change per pose to show progression emotions
+    const arms: Record<number, React.ReactNode> = {
+        // Pose 0: Thinking — hand on chin
+        0: (
+            <>
+                <line x1="50" y1="35" x2="65" y2="48" />
+                <line x1="65" y1="48" x2="58" y2="22" />
+                <line x1="50" y1="35" x2="30" y2="50" />
+                <line x1="30" y1="50" x2="25" y2="42" />
+            </>
+        ),
+        // Pose 1: Drawing — arms angled like sketching
+        1: (
+            <>
+                <line x1="50" y1="35" x2="72" y2="38" />
+                <line x1="72" y1="38" x2="80" y2="50" />
+                <line x1="50" y1="35" x2="28" y2="42" />
+                <line x1="28" y1="42" x2="20" y2="35" />
+            </>
+        ),
+        // Pose 2: Typing — arms forward
+        2: (
+            <>
+                <line x1="50" y1="35" x2="70" y2="50" />
+                <line x1="70" y1="50" x2="75" y2="45" />
+                <line x1="50" y1="35" x2="30" y2="50" />
+                <line x1="30" y1="50" x2="25" y2="45" />
+            </>
+        ),
+        // Pose 3: Celebrating — arms up in victory
+        3: (
+            <>
+                <line x1="50" y1="35" x2="68" y2="25" />
+                <line x1="68" y1="25" x2="78" y2="15" />
+                <line x1="50" y1="35" x2="32" y2="25" />
+                <line x1="32" y1="25" x2="22" y2="15" />
+            </>
+        ),
+    }
 
-    // Height of the progress line
-    const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
+    const legs: Record<number, React.ReactNode> = {
+        // Pose 0-2: Standing steady
+        0: (
+            <>
+                <line x1="50" y1="58" x2="38" y2="82" />
+                <line x1="50" y1="58" x2="62" y2="82" />
+            </>
+        ),
+        1: (
+            <>
+                <line x1="50" y1="58" x2="36" y2="82" />
+                <line x1="50" y1="58" x2="64" y2="82" />
+            </>
+        ),
+        2: (
+            <>
+                <line x1="50" y1="58" x2="40" y2="82" />
+                <line x1="50" y1="58" x2="60" y2="82" />
+            </>
+        ),
+        // Pose 3: Jumping with joy — wide legs
+        3: (
+            <>
+                <line x1="50" y1="58" x2="30" y2="80" />
+                <line x1="50" y1="58" x2="70" y2="80" />
+            </>
+        ),
+    }
+
+    const safePose = Math.min(pose, 3)
 
     return (
-        <section ref={containerRef} className="py-24 md:py-36 bg-[var(--color-bg)] relative">
-            <Container>
-                {/* Header */}
-                <div className="max-w-3xl mb-24">
-                    <motion.h2 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-[var(--color-text)] mb-6 leading-[1.1]"
-                    >
-                        Simple. Transparent.<br />
-                        <span className="gradient-text">Effective.</span>
-                    </motion.h2>
-                    <motion.p 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
-                        className="text-xl text-[var(--color-text-secondary)]"
-                    >
-                        A battle-tested process that turns your idea into a product.
-                    </motion.p>
-                </div>
+        <svg viewBox="0 0 100 100" className="w-[70px] h-[70px] text-white">
+            <g stroke="currentColor" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                {/* Pulsing glow behind head */}
+                <circle cx="50" cy="18" r="14" stroke="none" fill="rgba(59,130,246,0.5)" filter="blur(6px)" />
+                {/* Head */}
+                <circle cx="50" cy="18" r="8" fill="currentColor" />
+                {/* Body spine */}
+                <line x1="50" y1="26" x2="50" y2="58" />
+                {/* Dynamic arms */}
+                {arms[safePose]}
+                {/* Dynamic legs */}
+                {legs[safePose]}
+                {/* Hoverboard */}
+                <line x1="15" y1="92" x2="85" y2="92" stroke="#8b5cf6" strokeWidth="8" className="drop-shadow-[0_15px_15px_rgba(139,92,246,1)]" />
+            </g>
+        </svg>
+    )
+}
 
-                {/* Timeline */}
-                <div className="relative max-w-4xl mx-auto">
-                    {/* Wavy Background & Active Line */}
-                    <div className="absolute left-[8px] md:left-[20px] top-0 bottom-0 w-[40px] z-0 overflow-hidden" aria-hidden="true">
-                        <svg
-                            viewBox="0 0 40 100"
-                            preserveAspectRatio="none"
-                            className="w-full h-full absolute top-0 left-0"
+export function ProcessTimeline() {
+    const sectionRef = useRef<HTMLDivElement>(null)
+    const pinRef = useRef<HTMLDivElement>(null)
+    const fillRef = useRef<HTMLDivElement>(null)
+    const stickmanRef = useRef<HTMLDivElement>(null)
+    const titleRef = useRef<HTMLDivElement>(null)
+    const stepsRef = useRef<(HTMLDivElement | null)[]>([])
+    const nodesRef = useRef<(HTMLDivElement | null)[]>([])
+    const poseRef = useRef(0)
+
+    useEffect(() => {
+        if (typeof window === "undefined") return
+
+        const section = sectionRef.current
+        const pin = pinRef.current
+        const fill = fillRef.current
+        const stickman = stickmanRef.current
+        const title = titleRef.current
+
+        if (!section || !pin || !fill || !stickman || !title) return
+
+        // ── GSAP Context (scoped to this section only) ──
+        const ctx = gsap.context(() => {
+
+            // Initially hide all step text blocks
+            stepsRef.current.forEach(el => {
+                if (el) gsap.set(el, { opacity: 0, y: 40, scale: 0.95 })
+            })
+
+            // Initially hide all node glows
+            nodesRef.current.forEach(el => {
+                if (el) gsap.set(el, { opacity: 0, scale: 0 })
+            })
+
+            // Set the fill bar initial state
+            gsap.set(fill, { height: "0%" })
+            gsap.set(stickman, { top: "0%" })
+
+            const numSteps = steps.length
+
+            // ── Master ScrollTrigger Timeline ──
+            // pin: true handles the sticky + spacer height automatically
+            const masterTL = gsap.timeline({
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top top",
+                    end: () => `+=${numSteps * (window.innerWidth < 768 ? 70 : 100)}vh`,
+                    pin: pin,
+                    pinSpacing: true,
+                    scrub: 1,
+                    anticipatePin: 1,
+                    refreshPriority: -1, // Process last — lowest on page
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        // Update the stickman pose at each milestone boundary (25%, 50%, 75%, 100%)
+                        const progress = self.progress
+                        let newPose = 0
+                        if (progress >= 0.75) newPose = 3      // Launch & Scale → celebrating
+                        else if (progress >= 0.50) newPose = 2 // Develop → typing
+                        else if (progress >= 0.25) newPose = 1 // Design → drawing
+                        else newPose = 0                       // Discovery → thinking
+
+                        if (newPose !== poseRef.current) {
+                            poseRef.current = newPose
+                            // Crossfade to the new pose
+                            for (let p = 0; p < 4; p++) {
+                                const poseEl = stickman.querySelector(`.stickman-pose-${p}`) as HTMLElement
+                                if (poseEl) {
+                                    gsap.to(poseEl, { opacity: p === newPose ? 1 : 0, duration: 0.3, ease: "power2.out" })
+                                }
+                            }
+                            // Bounce effect on pose change
+                            gsap.fromTo(stickman, { scale: 1.2 }, { scale: 1, duration: 0.4, ease: "back.out(3)" })
+                        }
+                    }
+                }
+            })
+
+            // 1. Fade out the intro title quickly
+            masterTL.to(title, {
+                opacity: 0,
+                y: -30,
+                duration: 0.4,
+                ease: "power2.inOut"
+            }, 0)
+
+            // 2. Fill the loading bar from 0% to 95% — capped to land exactly on the final node
+            masterTL.to(fill, {
+                height: "95%",
+                duration: numSteps,
+                ease: "none"
+            }, 0)
+
+            // 3. Move the stickman wrapper down to 95% — landing exactly on the Stage 4 node
+            masterTL.to(stickman, {
+                top: "95%",
+                duration: numSteps,
+                ease: "none"
+            }, 0)
+
+            // 4. Crossfade step text blocks one at a time
+            steps.forEach((_, i) => {
+                const el = stepsRef.current[i]
+                const node = nodesRef.current[i]
+                if (!el) return
+
+                const segStart = i
+                const segMid = i + 0.3
+                const segEnd = i + 0.7
+
+                // Fade in this step's text
+                masterTL.to(el, {
+                    opacity: 1, y: 0, scale: 1,
+                    duration: 0.3, ease: "power2.out"
+                }, segStart)
+
+                // Fade out (except last step stays visible)
+                if (i < numSteps - 1) {
+                    masterTL.to(el, {
+                        opacity: 0, y: -30, scale: 0.95,
+                        duration: 0.3, ease: "power2.in"
+                    }, segEnd)
+                }
+
+                // Pop the node glow when the fill reaches this step's position
+                if (node) {
+                    masterTL.to(node, {
+                        opacity: 1, scale: 1,
+                        duration: 0.2, ease: "back.out(2)"
+                    }, segMid)
+                }
+            })
+
+        }, section) // ← scoped to this section only
+
+        // This is the LAST GSAP section on the page.
+        // One deferred refresh ensures ALL 3 pin spacers (hero, services, timeline)
+        // are recalculated in correct page order after every component has mounted.
+        const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 200)
+
+        return () => {
+            clearTimeout(refreshTimer)
+            ctx.revert() // Clean up only this section's GSAP instances
+        }
+    }, [])
+
+    return (
+        <section ref={sectionRef} className="relative bg-[#050505]">
+            {/* This div gets pinned by GSAP — no manual sticky or h-[xxxvh] needed */}
+            <div ref={pinRef} className="h-screen overflow-hidden flex items-center justify-center">
+
+                {/* Immersive Background Ambience */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.08),transparent_70%)] pointer-events-none" />
+                <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)] pointer-events-none" />
+
+                <Container className="relative z-10 w-full h-full flex flex-row items-center border-l border-r border-white/5 bg-black/20 backdrop-blur-sm">
+
+                    {/* LEFT SIDE: Dynamic Text Stage */}
+                    <div className="w-[75%] md:w-[60%] h-full flex flex-col justify-center pl-4 pr-2 sm:px-6 md:px-16 lg:px-24 relative z-20">
+
+                        {/* Initial Header — GSAP fades this out */}
+                        <div
+                            ref={titleRef}
+                            className="absolute left-4 right-2 sm:inset-x-6 md:inset-x-16 lg:inset-x-24 top-1/2 -translate-y-1/2 pointer-events-none"
                         >
-                            <defs>
-                                <linearGradient id="blueline" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0" />
-                                    <stop offset="10%" stopColor="#3b82f6" stopOpacity="1" />
-                                    <stop offset="90%" stopColor="#8b5cf6" stopOpacity="1" />
-                                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
-                                </linearGradient>
-                                <filter id="blueglow" x="-50%" y="-50%" width="200%" height="200%">
-                                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            <path
-                                d="M20,0 Q40,2.5 20,5 Q0,7.5 20,10 Q40,12.5 20,15 Q0,17.5 20,20 Q40,22.5 20,25 Q0,27.5 20,30 Q40,32.5 20,35 Q0,37.5 20,40 Q40,42.5 20,45 Q0,47.5 20,50 Q40,52.5 20,55 Q0,57.5 20,60 Q40,62.5 20,65 Q0,67.5 20,70 Q40,72.5 20,75 Q0,77.5 20,80 Q40,82.5 20,85 Q0,87.5 20,90 Q40,92.5 20,95 Q0,97.5 20,100"
-                                fill="none"
-                                stroke="var(--color-border)"
-                                strokeWidth="2"
-                                vectorEffect="non-scaling-stroke"
-                                className="opacity-50"
-                            />
-                            <motion.path
-                                d="M20,0 Q40,2.5 20,5 Q0,7.5 20,10 Q40,12.5 20,15 Q0,17.5 20,20 Q40,22.5 20,25 Q0,27.5 20,30 Q40,32.5 20,35 Q0,37.5 20,40 Q40,42.5 20,45 Q0,47.5 20,50 Q40,52.5 20,55 Q0,57.5 20,60 Q40,62.5 20,65 Q0,67.5 20,70 Q40,72.5 20,75 Q0,77.5 20,80 Q40,82.5 20,85 Q0,87.5 20,90 Q40,92.5 20,95 Q0,97.5 20,100"
-                                fill="none"
-                                stroke="url(#blueline)"
-                                strokeWidth="4"
-                                filter="url(#blueglow)"
-                                vectorEffect="non-scaling-stroke"
-                                strokeLinecap="round"
-                                style={{
-                                    pathLength: scrollYProgress,
-                                }}
-                            />
-                        </svg>
-                    </div>
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-black tracking-[0.2em] uppercase text-[#3b82f6] bg-[#3b82f6]/10 border border-[#3b82f6]/20 mb-4 md:mb-6 shadow-sm">
+                                The Master Plan
+                            </span>
+                            <h2 className="text-[clamp(1.5rem,5vw,5rem)] md:text-[clamp(2rem,6vw,5rem)] font-black tracking-tight text-white mb-4 md:mb-6 leading-[1.05]">
+                                Simple. Transparent.<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6] drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">Effective.</span>
+                            </h2>
+                            <p className="text-sm md:text-xl text-white/60 font-medium max-w-lg leading-relaxed">
+                                Scroll down to watch the exact trajectory of your operations from start to finish.
+                            </p>
+                        </div>
 
-                    <div className="space-y-24 pb-24">
-                        {steps.map((step, index) => (
-                            <div key={step.id} className="relative flex gap-8 md:gap-16 group pt-4">
-                                {/* Dot */}
-                                <div className="relative z-20 flex-shrink-0 mt-2">
-                                    <motion.div 
-                                        className="w-14 h-14 md:w-20 md:h-20 rounded-full border-2 border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-center transition-all duration-700 shadow-sm relative overflow-hidden"
-                                        whileInView={{
-                                            borderColor: "#3b82f6",
-                                            boxShadow: "0 0 20px rgba(59, 130, 246, 0.5)",
-                                        }}
-                                        viewport={{ margin: "-200px 0px -200px 0px", once: false }}
-                                    >
-                                        <div className="absolute inset-0 bg-[#3b82f6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                        <motion.span 
-                                            className="text-sm md:text-base font-bold text-[var(--color-text-secondary)] transition-colors duration-500"
-                                            whileInView={{ color: "#3b82f6" }}
-                                            viewport={{ margin: "-200px 0px -200px 0px", once: false }}
-                                        >
-                                            {step.id}
-                                        </motion.span>
-                                    </motion.div>
-                                </div>
-
-                                {/* Content */}
-                                <motion.div 
-                                    initial={{ opacity: 0, x: 20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ margin: "-200px 0px -200px 0px", once: false }}
-                                    className="pt-3 md:pt-5"
-                                >
-                                    <h3 className="text-3xl md:text-5xl font-bold text-[var(--color-text)] mb-4 md:mb-6 tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#3b82f6] group-hover:to-[#8b5cf6] transition-all duration-500">
-                                        {step.title}
-                                    </h3>
-                                    <p className="text-lg md:text-2xl text-[var(--color-text-secondary)] leading-relaxed max-w-2xl font-light">
-                                        {step.subtitle}
-                                    </p>
-                                </motion.div>
+                        {/* Step text blocks — stacked absolutely, GSAP crossfades them */}
+                        {steps.map((step, i) => (
+                            <div
+                                key={step.id}
+                                ref={el => { stepsRef.current[i] = el }}
+                                className="absolute left-4 right-2 sm:inset-x-6 md:inset-x-16 lg:inset-x-24 top-1/2 -translate-y-1/2 pointer-events-none"
+                            >
+                                <h3 className="text-5xl sm:text-8xl md:text-[160px] font-black text-white/[0.06] absolute -top-10 sm:-top-12 md:-top-24 -left-2 sm:-left-4 md:-left-8 -z-10 select-none pointer-events-none">
+                                    {step.id}
+                                </h3>
+                                <h4 className="text-2xl sm:text-4xl md:text-[4.5rem] font-black text-white mb-3 sm:mb-6 md:mb-8 tracking-tighter leading-none pr-4">
+                                    {step.title}
+                                </h4>
+                                <div className="h-1 sm:h-1.5 w-12 sm:w-24 bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6] mb-3 sm:mb-6 md:mb-8 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
+                                <p className="text-sm sm:text-xl md:text-2xl text-white/70 font-medium leading-relaxed max-w-xl pr-2">
+                                    {step.subtitle}
+                                </p>
                             </div>
                         ))}
                     </div>
-                </div>
-            </Container>
+
+                    {/* RIGHT SIDE: The 3D Progress Track & Stickman */}
+                    <div className="flex w-[25%] md:w-[40%] h-full items-center justify-center relative border-l border-white/5">
+
+                        {/* Sci-Fi HUD Track Measurements */}
+                        <div className="absolute h-[60vh] md:h-[80vh] w-24 md:w-48 flex z-0 opacity-20 md:opacity-40">
+                            <div className="absolute inset-y-0 left-0 w-4 md:w-8 border-r md:border-r-2 border-dashed border-[#3b82f6]/40 flex flex-col justify-between py-2 translate-x-8 md:translate-x-0">
+                                {[...Array(20)].map((_, i) => (
+                                    <div key={i} className={`h-px bg-[#3b82f6] ${i % 5 === 0 ? "w-4 md:w-6 ml-auto shadow-[0_0_5px_#3b82f6]" : "w-2 md:w-3 ml-auto opacity-50"}`} />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Outer Glow Core Container */}
+                        <div className="relative w-8 md:w-12 h-[60vh] md:h-[80vh] flex justify-center z-10 transform scale-75 md:scale-100 origin-center">
+
+                            {/* The Physical 3D Glass Tube */}
+                            <div className="absolute inset-y-0 w-4 md:w-6 rounded-full bg-[#0a0a0a] border-[1px] md:border-[1.5px] border-white/10 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] overflow-hidden flex justify-center z-10">
+                                {/* The Internal Rising Fluid Gradient */}
+                                <div
+                                    ref={fillRef}
+                                    className="absolute top-0 w-full bg-gradient-to-b from-[#3b82f6] via-[#6366f1] to-[#8b5cf6] shadow-[0_0_50px_rgba(59,130,246,1)]"
+                                    style={{ height: "0%" }}
+                                >
+                                    {/* Cap highlight for the fluid */}
+                                    <div className="absolute bottom-0 w-full h-8 bg-gradient-to-t from-white/80 to-transparent blur-[2px]" />
+                                </div>
+
+                                {/* 3D Glass Highlights on Tube */}
+                                <div className="absolute inset-y-0 left-0.5 w-[1px] md:w-[2px] bg-gradient-to-b from-white/20 via-white/5 to-transparent rounded-full" />
+                                <div className="absolute inset-y-0 right-0 w-[1px] md:w-1 bg-black/60 rounded-full" />
+                            </div>
+
+                            {/* Node Connectors lighting up as the liquid passes */}
+                            <div className="absolute inset-y-0 w-full z-0">
+                                {steps.map((step, i) => {
+                                    // Place nodes at 25%, 50%, 75%, 95% — last one slightly below top so stickman visually reaches it
+                                    const nodePercent = i < steps.length - 1 ? ((i + 1) / steps.length) * 100 : 95
+                                    return (
+                                        <div
+                                            key={step.id}
+                                            ref={el => { nodesRef.current[i] = el }}
+                                            className="absolute left-1/2 -translate-x-1/2 w-16 md:w-24 h-[1px] flex items-center justify-center pointer-events-none"
+                                            style={{ top: `${nodePercent}%`, opacity: 0, transform: "translateX(-50%) scale(0)" }}
+                                        >
+                                            <div className="absolute w-12 md:w-16 h-12 md:h-16 rounded-full border border-[#8b5cf6] bg-[#8b5cf6]/5 shadow-[0_0_30px_rgba(139,92,246,0.6)]" />
+                                            <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#8b5cf6] to-transparent" />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+
+                            {/* THE CUSTOMER (Stickman with animated poses) */}
+                            <div
+                                ref={stickmanRef}
+                                className="absolute w-16 md:w-24 pointer-events-none z-30"
+                                style={{ top: "0%" }}
+                                data-stickman-pose
+                            >
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 pb-2 drop-shadow-[0_0_20px_rgba(59,130,246,1)] flex flex-col items-center">
+                                    {/* All 4 poses rendered — visibility controlled via CSS classes toggled by GSAP onUpdate */}
+                                    <div className="relative w-[50px] md:w-[70px] h-[50px] md:h-[70px]">
+                                        {[0, 1, 2, 3].map(p => (
+                                            <div key={p} className={`stickman-pose-${p} absolute inset-0 flex items-center justify-center transition-none`} style={{ opacity: p === 0 ? 1 : 0 }}>
+                                                <StickmanPose pose={p} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </Container>
+
+                {/* Foreground Ambient Glow */}
+                <div className="absolute bottom-0 inset-x-0 h-64 bg-gradient-to-t from-[#050505] to-transparent pointer-events-none z-50" />
+            </div>
         </section>
     )
 }

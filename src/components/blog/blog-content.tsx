@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "motion/react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { Container } from "@/components/ui/container"
 import Link from "next/link"
 import { ArrowRight, ArrowUpRight, Clock } from "lucide-react"
@@ -19,6 +19,8 @@ interface Post {
     tags?: string[]
     image?: string
 }
+
+import { getDeviceId } from '@/lib/device'
 
 /* ─── Motion Utilities ─── */
 
@@ -86,6 +88,46 @@ export function BlogContent({ posts }: { posts: Post[] }) {
     })
     const heroY = useTransform(scrollYProgress, [0, 1], [0, 120])
     const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+    // Newsletter state
+    const [email, setEmail] = useState("")
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+    const [message, setMessage] = useState("")
+
+    const handleSubscribe = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!email) return
+
+        if (email.length > 25) {
+            setStatus("error")
+            setMessage("Email address is too long (max 25 characters).")
+            return
+        }
+
+        setStatus("loading")
+        setMessage("")
+
+        try {
+            const res = await fetch("/api/newsletter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, device_id: getDeviceId() }),
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to subscribe")
+            }
+
+            setStatus("success")
+            setMessage("Thanks for subscribing! Keep an eye on your inbox.")
+            setEmail("")
+        } catch (error: any) {
+            setStatus("error")
+            setMessage(error.message || "An error occurred. Please try again.")
+        }
+    }
 
     const featuredPost = posts[0]
     const remainingPosts = posts.slice(1)
@@ -305,17 +347,39 @@ export function BlogContent({ posts }: { posts: Post[] }) {
                             </p>
                         </FadeReveal>
                         <FadeReveal delay={0.35}>
-                            <div className="flex flex-col sm:flex-row gap-4">
+                            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4">
                                 <input
                                     type="email"
+                                    maxLength={25}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="you@company.com"
-                                    className="h-14 px-6 bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-base font-medium tracking-wide focus:outline-none focus:border-[var(--color-brand)]/50 transition-colors flex-1 max-w-md"
+                                    disabled={status === "loading" || status === "success"}
+                                    className="h-14 px-6 bg-white/5 border border-white/10 text-white placeholder:text-white/30 text-base font-medium tracking-wide focus:outline-none focus:border-[var(--color-brand)]/50 transition-colors flex-1 max-w-md disabled:opacity-50"
+                                    required
                                 />
-                                <button className="h-14 px-8 bg-white text-black font-bold text-base tracking-wide hover:bg-gray-200 transition-colors flex items-center gap-3 shrink-0">
-                                    Subscribe
-                                    <ArrowRight className="w-4 h-4" />
+                                <button
+                                    type="submit"
+                                    disabled={status === "loading" || status === "success"}
+                                    className="h-14 px-8 bg-white text-black font-bold text-base tracking-wide hover:bg-gray-200 transition-colors flex items-center justify-center gap-3 shrink-0 disabled:opacity-75"
+                                >
+                                    {status === "loading" ? (
+                                        "Subscribing..."
+                                    ) : status === "success" ? (
+                                        "Subscribed"
+                                    ) : (
+                                        <>
+                                            Subscribe
+                                            <ArrowRight className="w-4 h-4" />
+                                        </>
+                                    )}
                                 </button>
-                            </div>
+                            </form>
+                            {message && (
+                                <p className={`mt-4 text-sm ${status === "success" ? "text-emerald-400" : "text-red-400"}`}>
+                                    {message}
+                                </p>
+                            )}
                         </FadeReveal>
                     </div>
                 </Container>

@@ -1,7 +1,5 @@
 import { Container } from "@/components/ui/container"
 import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import Link from "next/link"
 
 interface AEOPageProps {
@@ -28,7 +26,6 @@ export function AEOPage({ headline, answer, tableData, children }: AEOPageProps)
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
             />
 
-            <Header />
             <div className="pt-24 pb-12 bg-white">
                 <Container className="max-w-4xl">
                     <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-8">
@@ -85,7 +82,6 @@ export function AEOPage({ headline, answer, tableData, children }: AEOPageProps)
                     </div>
                 </Container>
             </div>
-            <Footer />
         </>
     )
 }

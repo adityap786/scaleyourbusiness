@@ -6,70 +6,27 @@ import { Container } from "@/components/ui/container"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-// ─── Real client projects ────────────────────────────────────────────────────
-const baseProjects = [
-    {
-        title: "Peak Nutrition",
-        category: "Health & Fitness",
-        brandColor: "#D9FA50",
-        brandBg: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
-        image: "https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=800&auto=format&fit=crop",
-        href: "/work/peak-nutrition",
-    },
-    {
-        title: "Doner & Gyros",
-        category: "F&B Brand",
-        brandColor: "#FF6B35",
-        brandBg: "linear-gradient(135deg, #1a0a00 0%, #2d1810 100%)",
-        image: "https://images.unsplash.com/photo-1529042410759-befb1204b468?q=80&w=800&auto=format&fit=crop",
-        href: "/work/doner-gyros-india",
-    },
-    {
-        title: "Just Smile",
-        subtitle: "Catering & Hospitality",
-        category: "Hospitality",
-        brandColor: "#F5C518",
-        brandBg: "linear-gradient(135deg, #1a1500 0%, #2d2200 100%)",
-        image: "https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=800&auto=format&fit=crop",
-        href: "/work/just-smile-catering",
-    },
-    {
-        title: "Eggeto",
-        subtitle: "India's 1st Instant Omelette",
-        category: "E-Commerce",
-        brandColor: "#FBBF24",
-        brandBg: "linear-gradient(135deg, #1c1607 0%, #292011 100%)",
-        image: "https://images.unsplash.com/photo-1498837167922-41c53b4f0f67?q=80&w=800&auto=format&fit=crop",
-        href: "/work/eggeto",
-    },
-    {
-        title: "BH Hotels",
-        category: "Hotel & Stays",
-        brandColor: "#C9A96E",
-        brandBg: "linear-gradient(135deg, #0a0a0a 0%, #1a1510 100%)",
-        image: "https://images.unsplash.com/photo-1542314831-c6a420325142?q=80&w=800&auto=format&fit=crop",
-        href: "/work/bh-hotels",
-    },
-    {
-        title: "Amrapali AI",
-        category: "AI Lead Gen",
-        brandColor: "#818CF8",
-        brandBg: "linear-gradient(135deg, #0f0a1e 0%, #1a1030 100%)",
-        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-        href: "/work/amrapali-ai-leads",
-    },
-]
+interface ProjectData {
+    id: string | number
+    title: string
+    subtitle?: string
+    category: string
+    brandColor: string
+    brandBg: string
+    image: string
+    href: string
+}
 
-// Duplicate to fill the cylinder
-const projects = [...baseProjects, ...baseProjects].map((p, i) => ({ ...p, id: i }))
-const NUM_CARDS = projects.length
-const ANGLE_INCREMENT = 360 / NUM_CARDS
-
-export function PortfolioCarousel() {
+export function PortfolioCarousel({ initialProjects }: { initialProjects: ProjectData[] }) {
     const containerRef = useRef<HTMLDivElement>(null)
     const viewportRef = useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
+
+    // Duplicate to fill the cylinder
+    const projects = initialProjects.length > 0 ? [...initialProjects, ...initialProjects].map((p, i) => ({ ...p, uniqueId: i })) : []
+    const NUM_CARDS = projects.length || 1
+    const ANGLE_INCREMENT = 360 / NUM_CARDS
 
     // Responsive vh-based card sizes
     const [dims, setDims] = useState({ w: 420, h: 520, radius: 900 })
@@ -85,12 +42,12 @@ export function PortfolioCarousel() {
             const h = mobile ? vh * 0.52 : vh * 0.62
             const gap = mobile ? 16 : 28
             const radius = Math.round(((w + gap) / 2) / Math.tan(Math.PI / NUM_CARDS))
-            setDims({ w, h, radius })
+            setDims({ w, h, radius: Math.max(radius, 400) }) // Ensure minimum radius
         }
         calc()
         window.addEventListener("resize", calc)
         return () => window.removeEventListener("resize", calc)
-    }, [])
+    }, [NUM_CARDS])
 
     const rotation = useMotionValue(0)
     const springRotation = useSpring(rotation, {
@@ -110,7 +67,7 @@ export function PortfolioCarousel() {
         dragging.current = true
         lastX.current = e.clientX
         setIsDragging(true)
-        ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+            ; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     }, [])
 
     const onPointerMove = useCallback((e: React.PointerEvent) => {
@@ -128,7 +85,7 @@ export function PortfolioCarousel() {
     // Auto-rotation
     useEffect(() => {
         let controls: ReturnType<typeof animate> | undefined
-        if (!isDragging && !isHovered) {
+        if (!isDragging && !isHovered && projects.length > 0) {
             controls = animate(rotation, rotation.get() - 360, {
                 duration: 55,
                 ease: "linear",
@@ -136,7 +93,9 @@ export function PortfolioCarousel() {
             })
         }
         return () => controls?.stop()
-    }, [isDragging, isHovered, rotation])
+    }, [isDragging, isHovered, rotation, projects.length])
+
+    if (projects.length === 0) return null
 
     return (
         <section className="py-24 md:py-36 bg-[var(--color-bg)] relative overflow-hidden flex flex-col items-center">
@@ -190,7 +149,7 @@ export function PortfolioCarousel() {
                         const angle = index * ANGLE_INCREMENT
                         return (
                             <div
-                                key={project.id}
+                                key={project.uniqueId}
                                 className="absolute top-0 left-0 w-full h-full transform-gpu"
                                 style={{
                                     transform: `rotateY(${angle}deg) translateZ(${dims.radius}px)`,
@@ -221,7 +180,7 @@ export function PortfolioCarousel() {
                                         >
                                             {project.title}
                                         </span>
-                                        {"subtitle" in project && project.subtitle && (
+                                        {project.subtitle && (
                                             <span className="mt-2 text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50">
                                                 {project.subtitle}
                                             </span>

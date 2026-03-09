@@ -149,18 +149,37 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       container.addEventListener('touchmove', handleTouchMove)
     }
 
-    let animationId: number
+    let animationId: number = 0
     function update(t: number) {
       animationId = requestAnimationFrame(update)
       program.uniforms.uTime.value = t * 0.001 * speed
       renderer.render({ scene: mesh })
     }
-    animationId = requestAnimationFrame(update)
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!animationId) {
+            animationId = requestAnimationFrame(update)
+          }
+        } else {
+          if (animationId) {
+            cancelAnimationFrame(animationId)
+            animationId = 0
+          }
+        }
+      })
+    }, { threshold: 0 })
+
+    observer.observe(container)
 
     container.appendChild(canvas)
 
     return () => {
-      cancelAnimationFrame(animationId)
+      observer.disconnect()
+      if (animationId) {
+        cancelAnimationFrame(animationId)
+      }
       window.removeEventListener('resize', resize)
       if (interactive) {
         container.removeEventListener('mousemove', handleMouseMove)

@@ -1,14 +1,23 @@
 "use client"
 
 import { Container } from "@/components/ui/container"
-import { PhoneMockup, MockupPhilosophyUI, MockupFinanceSplitUI, MockupFinanceUI } from "@/components/ui/phone-mockup"
+import { PhoneMockup, MockupFinanceSplitUI, MockupPhilosophyUI, MockupFinanceUI } from "@/components/ui/phone-mockup"
 import { ArrowRight, ArrowUpRight, CheckCircle2, Smartphone, Layers, Zap, Shield, Rocket, Code2, BarChart3, Globe } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import Link from "next/link"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { CTASection } from "@/components/home/cta-section"
 import { AestheticTestimonials } from "@/components/ui/aesthetic-testimonials"
 import { FAQAccordion } from "@/components/ui/faq-accordion"
+
+// Remotion
+import { Player } from "@remotion/player"
+import { AppDevPhase1 } from "../../../remotion/compositions/AppDevPhase1"
+import { AppDevPhase2 } from "../../../remotion/compositions/AppDevPhase2"
+import { AppDevPhase3 } from "../../../remotion/compositions/AppDevPhase3"
+import { AppDevPhase4 } from "../../../remotion/compositions/AppDevPhase4"
 
 /* ─────────────────────── Motion Utilities ─────────────────────── */
 
@@ -121,6 +130,186 @@ const CAPABILITIES = [
 ]
 
 /* ═════════════════════════════════════════════════════════════════════ */
+/*                     HORIZONTAL SCROLL PROCESS                         */
+/* ═════════════════════════════════════════════════════════════════════ */
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger)
+}
+
+function AppDevHorizontalProcess() {
+    const sectionRef = useRef<HTMLDivElement>(null)
+    const pinRef = useRef<HTMLDivElement>(null)
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const lineRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const section = sectionRef.current
+        const pinContainer = pinRef.current
+        const wrapper = wrapperRef.current
+        const line = lineRef.current
+
+        if (!section || !pinContainer || !wrapper || !line) return
+
+        let ctx = gsap.context(() => {
+            // Calculate how far to scroll based on the wrapper's width vs the window's width
+            // We have 5 sections (intro + 4 phases) = 500vw. We want to move left by (500vw - 100vw) = 400vw
+            const getExpectedWidth = () => wrapper.scrollWidth - window.innerWidth
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: section,
+                    pin: pinContainer,
+                    start: "top top",
+                    end: () => `+=${getExpectedWidth()}`,
+                    scrub: 1,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true, // recalculates on resize
+                }
+            })
+
+            // Run BOTH animations simultaneously at the start (time 0) of the timeline
+            tl.to(wrapper, {
+                x: () => -getExpectedWidth(),
+                ease: "none"
+            }, 0)
+
+            tl.to(line, {
+                scaleX: 1,
+                ease: "none"
+            }, 0)
+
+        }, sectionRef)
+
+        // Force a recalculation after initial render and potential font loads
+        const timer = setTimeout(() => {
+            ScrollTrigger.refresh()
+        }, 500)
+
+        // Also observe the document body for any height changes (e.g., images loading above)
+        const observer = new ResizeObserver(() => {
+            ScrollTrigger.refresh()
+        })
+        observer.observe(document.body)
+
+        return () => {
+            clearTimeout(timer)
+            observer.disconnect()
+            ctx.revert()
+        }
+    }, [])
+
+    return (
+        <section ref={sectionRef} className="relative z-30 bg-[#050505] selection:bg-brand selection:text-white">
+            <div ref={pinRef} className="h-screen w-full relative overflow-hidden">
+                {/* Background glow that moves slightly based on scroll */}
+                <div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-brand/5 rounded-full blur-[150px] pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.06] pointer-events-none mix-blend-overlay" />
+
+                <div ref={wrapperRef} className="flex w-[500vw] h-full items-center relative z-10 will-change-transform">
+
+                    {/* SLIDE 0: INTRO */}
+                    <div className="w-screen h-full flex flex-col justify-center px-6 md:px-24 py-24 relative overflow-hidden shrink-0">
+                        <div className="max-w-[1600px] mx-auto w-full relative z-10">
+                            <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-brand mb-8 pl-1">THE TRANSFORMATION</div>
+                            <h2 className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] text-white">
+                                FROM IDEA TO<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-500 italic pr-2">APP STORE.</span>
+                            </h2>
+                            <p className="text-xl md:text-2xl text-white/50 font-light mt-12 max-w-2xl leading-relaxed">
+                                We don&apos;t guess. We engineer. Our 4-phase methodology guarantees a production-ready application built for scale, performance, and revenue.
+                            </p>
+                            <div className="mt-16 flex items-center gap-4 text-white/40 animate-pulse">
+                                <div className="h-px w-24 bg-white/40" />
+                                <span className="text-xs font-bold tracking-[0.2em] uppercase">Scroll to explore</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SLIDES 1-4: PHASES */}
+                    {PROCESS.map((item, i) => (
+                        <div key={item.step} className="w-screen h-full flex flex-col justify-center px-6 md:px-24 py-24 relative overflow-hidden shrink-0">
+                            {/* Giant Watermark Number */}
+                            <div className="absolute top-1/2 left-[5%] -translate-y-1/2 text-[45vw] font-black text-white/[0.02] select-none pointer-events-none leading-none tracking-tighter mix-blend-screen">
+                                {item.step}
+                            </div>
+
+                            <div className="grid lg:grid-cols-2 gap-16 items-center w-full max-w-[1600px] mx-auto relative z-10">
+                                {/* Left Content */}
+                                <div>
+                                    <div className="inline-flex items-center gap-4 mb-8">
+                                        <div className="text-[10px] font-black tracking-[0.4em] uppercase text-brand">PHASE {item.step}</div>
+                                        <div className="h-px w-12 bg-white/20" />
+                                    </div>
+                                    <h3 className="text-5xl md:text-7xl lg:text-[6rem] font-black text-white tracking-tighter leading-[0.9] mb-8 drop-shadow-2xl">
+                                        {item.title.split(' & ').map((word: string, idx: number) => (
+                                            <span key={idx} className="block">
+                                                {word}
+                                                {idx === 0 && <span className="text-brand"> &</span>}
+                                            </span>
+                                        ))}
+                                    </h3>
+                                    <p className="text-xl md:text-2xl text-white/50 font-light leading-relaxed max-w-xl">
+                                        {item.desc}
+                                    </p>
+                                </div>
+
+                                {/* Right Visual */}
+                                <div className="flex justify-center lg:justify-end mt-12 lg:mt-0">
+                                    <div className="relative w-64 h-64 md:w-96 md:h-96 rounded-full overflow-hidden border border-white/5 group bg-[#020202] shadow-[0_0_50px_rgba(59,130,246,0.05)]">
+
+                                        <Player
+                                            component={
+                                                i === 0 ? AppDevPhase1 :
+                                                    i === 1 ? AppDevPhase2 :
+                                                        i === 2 ? AppDevPhase3 :
+                                                            AppDevPhase4
+                                            }
+                                            durationInFrames={360}
+                                            fps={30}
+                                            compositionWidth={480}
+                                            compositionHeight={480}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+                                            autoPlay
+                                            loop
+                                        />
+
+                                        {/* Hover glow ring perfectly mapped to the circle boundary */}
+                                        <div className="absolute inset-0 rounded-full border border-brand/0 group-hover:border-brand/40 transition-colors duration-700 pointer-events-none mix-blend-screen" />
+
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-brand/0 to-white/0 group-hover:from-brand/10 transition-colors duration-700 pointer-events-none rounded-full" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Custom Progress Bar / Indicator */}
+                <div className="absolute bottom-8 md:bottom-12 left-0 right-0 z-20 px-6 md:px-24">
+                    <div className="flex items-center gap-6 max-w-[1600px] mx-auto">
+                        <div className="text-[10px] md:text-xs font-bold tracking-widest text-white/40 w-24 shrink-0">TRANSFORM</div>
+                        <div className="flex-1 h-px bg-white/10 relative">
+                            <div
+                                ref={lineRef}
+                                style={{ transformOrigin: "left", transform: "scaleX(0)" }}
+                                className="absolute inset-0 bg-brand will-change-transform"
+                            />
+                        </div>
+                        <div className="text-[10px] md:text-xs font-bold tracking-widest text-white/40 w-12 text-right shrink-0">04</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+/* ═════════════════════════════════════════════════════════════════════ */
 /*                         MAIN COMPONENT                              */
 /* ═════════════════════════════════════════════════════════════════════ */
 
@@ -134,15 +323,25 @@ export function AppDevContent() {
     const heroTextOpacity = useTransform(heroScroll, [0, 0.6], [1, 0])
     const phoneY = useTransform(heroScroll, [0, 1], [0, -60])
 
-    const timelineRef = useRef<HTMLDivElement>(null)
-    const { scrollYProgress: timelineScroll } = useScroll({
-        target: timelineRef,
-        offset: ["start end", "end start"],
-    })
-    const timelineProgress = useTransform(timelineScroll, [0, 0.5], ["0%", "100%"])
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer
+            }
+        }))
+    }
 
     return (
-        <div className="bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+        <div className="bg-[var(--color-bg)] text-[var(--color-text)] relative">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
 
             {/* ═══════════════════════════════════════
                  HERO — Immersive entry with phone mockup
@@ -177,9 +376,15 @@ export function AppDevContent() {
                             </LineReveal>
 
                             <FadeReveal delay={0.3}>
-                                <p className="text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-lg mb-10 font-light">
+                                <p className="text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-lg mb-6 font-light">
                                     From fintech to marketplaces to AI-powered tools — we design, develop, and ship production-grade mobile apps that generate revenue and retain users.
                                 </p>
+                            </FadeReveal>
+
+                            <FadeReveal delay={0.35}>
+                                <div className="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg mb-10 font-medium">
+                                    <p>As a premium app development company in India, <strong className="text-black">Scale Your Business</strong> builds iOS and Android applications for startups across Delhi, Mumbai, Pune, and Bangalore. We specialize in cross-platform architectures that look and perform like native apps.</p>
+                                </div>
                             </FadeReveal>
 
                             <FadeReveal delay={0.4}>
@@ -301,7 +506,7 @@ export function AppDevContent() {
                     </div>
 
                     {/* Center phone with corner philosophy blocks */}
-                    <div className="relative flex items-center justify-center min-h-[700px] max-w-6xl mx-auto">
+                    <div className="relative flex items-center justify-center min-h-[500px] lg:min-h-[700px] max-w-6xl mx-auto">
                         {/* Phone (PRESERVED) */}
                         <FadeReveal delay={0.2} className="relative z-20">
                             <motion.div whileHover={{ scale: 1.02 }} className="relative group">
@@ -314,8 +519,8 @@ export function AppDevContent() {
                             </motion.div>
                         </FadeReveal>
 
-                        {/* Corner text blocks */}
-                        <div className="absolute inset-0 flex flex-col justify-between py-8 pointer-events-none">
+                        {/* Corner text blocks - Desktop Only */}
+                        <div className="absolute inset-0 hidden lg:flex flex-col justify-between py-8 pointer-events-none">
                             <div className="flex justify-between items-start">
                                 <FadeReveal delay={0.3} className="max-w-[260px]">
                                     <div className="text-[10px] font-black tracking-[0.25em] uppercase text-[var(--color-brand)] mb-3">01 — HUMAN FOCUSED</div>
@@ -345,6 +550,34 @@ export function AppDevContent() {
                                 </FadeReveal>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Mobile Philosophy Blocks */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 lg:hidden max-w-2xl mx-auto">
+                        <FadeReveal delay={0.3}>
+                            <div className="text-[10px] font-black tracking-[0.25em] uppercase text-[var(--color-brand)] mb-3">01 — HUMAN FOCUSED</div>
+                            <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                Every layout, motion, and interaction is shaped around real human behavior — not assumptions. Lasting impact over short-term hype.
+                            </p>
+                        </FadeReveal>
+                        <FadeReveal delay={0.4}>
+                            <div className="text-[10px] font-black tracking-[0.25em] uppercase text-[var(--color-brand)] mb-3">02 — BUILT FOR SCALE</div>
+                            <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                Our systems grow with your product, team, and evolving business needs — maintaining performance and stability over time.
+                            </p>
+                        </FadeReveal>
+                        <FadeReveal delay={0.5}>
+                            <div className="text-[10px] font-black tracking-[0.25em] uppercase text-[var(--color-brand)] mb-3">03 — CLARITY DRIVEN</div>
+                            <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                Interfaces that feel instantly understandable. Guiding users naturally through each interaction without friction or confusion.
+                            </p>
+                        </FadeReveal>
+                        <FadeReveal delay={0.6}>
+                            <div className="text-[10px] font-black tracking-[0.25em] uppercase text-[var(--color-brand)] mb-3">04 — PRECISION CRAFTED</div>
+                            <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                From spacing to interaction timing — every detail is refined to create a polished, reliable product experience users trust.
+                            </p>
+                        </FadeReveal>
                     </div>
                 </Container>
             </section>
@@ -432,7 +665,7 @@ export function AppDevContent() {
             {/* ═══════════════════════════════════════
                  FEATURE SHOWCASE — Split layout with phone (PRESERVED)
             ═══════════════════════════════════════ */}
-            <section className="relative flex flex-col overflow-hidden">
+            <section className="relative z-40 flex flex-col overflow-hidden bg-[var(--color-bg)]">
                 {/* Top half: Light */}
                 <div className="bg-[#F8FAFB] pt-24 pb-0 overflow-hidden relative">
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
@@ -565,81 +798,14 @@ export function AppDevContent() {
             </section>
 
             {/* ═══════════════════════════════════════
-                 PROCESS — Scroll-based transformation story
+                 PROCESS — Awwwards Style Horizontal Infinity Scroll
             ═══════════════════════════════════════ */}
-            <section ref={timelineRef} className="relative py-32 md:py-48 bg-[#FAFAFA] overflow-hidden">
-                <div className="absolute top-[10%] -left-[10%] w-[50vw] h-[50vw] bg-blue-100/40 rounded-full blur-[160px] pointer-events-none mix-blend-multiply" />
-                <div className="absolute bottom-[10%] -right-[10%] w-[50vw] h-[50vw] bg-indigo-100/40 rounded-full blur-[160px] pointer-events-none mix-blend-multiply" />
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-multiply" />
-
-                <Container>
-                    <div className="max-w-4xl mb-32 relative z-10">
-                        <FadeReveal>
-                            <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-blue-600 mb-8 pl-1">THE TRANSFORMATION</div>
-                        </FadeReveal>
-                        <LineReveal delay={0.1}>
-                            <h2 className="text-5xl md:text-7xl lg:text-[6.5rem] font-black tracking-tighter leading-[0.85] text-zinc-900">
-                                FROM IDEA TO<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 italic pr-2">APP STORE.</span>
-                            </h2>
-                        </LineReveal>
-                    </div>
-
-                    <div className="relative pt-10 pb-40">
-                        {PROCESS.map((item, i) => {
-                            const isEven = i % 2 === 0
-                            return (
-                                <motion.div
-                                    key={item.step}
-                                    initial={{ opacity: 0, y: 150, rotateX: 20 }}
-                                    whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                                    viewport={{ once: true, margin: "-20%" }}
-                                    transition={{ duration: 1.2, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                                    className={`relative z-[${10 + i}] mb-[-12vh] md:mb-[-15vh] group`}
-                                >
-                                    <div className={`flex flex-col md:flex-row items-center gap-8 md:gap-16 ${isEven ? "" : "md:flex-row-reverse"}`}>
-                                        
-                                        {/* Number + Graphic Side */}
-                                        <div className="w-full md:w-5/12 relative flex justify-center items-center">
-                                            <motion.div 
-                                                whileHover={{ scale: 1.05 }}
-                                                className="relative w-full aspect-square max-w-[320px] rounded-[3rem] bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden flex items-center justify-center p-8 group-hover:border-blue-100/80 transition-all duration-700"
-                                            >
-                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                                <div className="absolute -top-10 -right-10 text-[12rem] font-black text-zinc-900/5 leading-none select-none transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-12">
-                                                    {item.step}
-                                                </div>
-                                                <div className="relative z-10 text-blue-600/80 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-700">
-                                                    {item.icon}
-                                                </div>
-                                            </motion.div>
-                                        </div>
-
-                                        {/* Content Side */}
-                                        <div className={`w-full md:w-7/12 ${isEven ? "md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
-                                            <div className="inline-flex items-center gap-3 mb-6">
-                                                <span className="text-[11px] font-bold tracking-widest text-zinc-400">PHASE {item.step}</span>
-                                                <div className="h-[1px] w-12 bg-zinc-200" />
-                                            </div>
-                                            <h3 className="text-3xl md:text-5xl font-black tracking-tight mb-6 text-zinc-900">
-                                                {item.title}
-                                            </h3>
-                                            <p className="text-lg md:text-xl text-zinc-500 leading-relaxed max-w-xl font-medium">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )
-                        })}
-                    </div>
-                </Container>
-            </section>
+            <AppDevHorizontalProcess />
 
             {/* ═══════════════════════════════════════
                  FAQs — Architectural split
             ═══════════════════════════════════════ */}
-            <section className="py-32 border-t border-[var(--color-border)]">
+            <section className="relative z-20 py-32 border-t border-[var(--color-border)] bg-[var(--color-bg)]">
                 <Container>
                     <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-start">
                         <div className="md:sticky md:top-32">
@@ -664,11 +830,33 @@ export function AppDevContent() {
                 </Container>
             </section>
 
+            {/* ─── INTERNAL LINKS ───────────────────────────────────────── */}
+            <section className="py-16 bg-white border-y border-[var(--color-border)]">
+                <Container>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tight">Scale Further</h3>
+                            <p className="text-gray-500 max-w-xl">Complement your mobile app with a powerful admin dashboard or market it effectively.</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <Link href="/saas-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                SaaS & Admin <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/marketing-services" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                App Marketing <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+                </Container>
+            </section>
+
             {/* ═══════════ TESTIMONIALS ═══════════ */}
             <AestheticTestimonials />
 
             {/* ═══════════ CTA ═══════════ */}
-            <CTASection />
+            <div className="relative z-20">
+                <CTASection />
+            </div>
         </div>
     )
 }

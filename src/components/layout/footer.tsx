@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { Container } from "@/components/ui/container"
-import { motion, useScroll, useTransform } from "motion/react"
+import { motion } from "motion/react"
 import { ArrowUpRight } from "lucide-react"
-import { useRef } from "react"
+import { usePathname } from "next/navigation"
 
 const footerLinks = {
     Services: [
@@ -29,114 +29,130 @@ const footerLinks = {
     ],
 }
 
-export function Footer() {
-    const footerRef = useRef<HTMLElement>(null)
-    const { scrollYProgress } = useScroll({
-        target: footerRef,
-        offset: ["start end", "end end"]
-    })
+// Staggered animation variants
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+    }
+}
 
-    const y = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"])
-    const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1])
-    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.5, 1])
+const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } }
+}
+
+export function Footer() {
+    const pathname = usePathname()
+
+    if (pathname?.startsWith('/admin') || pathname?.startsWith('/login')) {
+        return null;
+    }
 
     return (
-        <footer 
-            ref={footerRef} 
-            className="bg-[#FAFAFA] text-zinc-900 relative overflow-hidden border-t border-black/5"
-            style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
-        >
-            <motion.div style={{ y, scale, opacity }} className="relative w-full h-full">
-                
-                {/* Immersive Depth & Grain Backdrops */}
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-multiply" />
-                <div className="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-gradient-to-b from-blue-50/50 to-transparent rounded-full blur-[120px] pointer-events-none -z-10" />
-                <div className="absolute -bottom-[50%] left-[20%] w-[60vw] h-[60vw] bg-indigo-100/40 rounded-full blur-[180px] pointer-events-none -z-10" />
+        <footer className="bg-zinc-950 text-zinc-300 relative overflow-hidden z-20 border-t border-zinc-900">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-[var(--color-brand)]/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
 
-                <Container className="pt-32 pb-12 relative z-10">
-                    
-                    {/* Top Call to Action Frame */}
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-16 mb-32">
-                        <div className="max-w-2xl">
-                            <h2 className="text-6xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.85] text-zinc-950 mb-8">
+            {/* Massive Background Typography centered vertically/horizontally */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col justify-center items-end pointer-events-none select-none -z-10 px-8 md:px-12">
+                <span className="text-[15.5vw] font-black text-white/[0.02] tracking-tighter leading-[0.85]">
+                    SCALE YOUR
+                </span>
+                <span className="text-[15.5vw] font-black text-white/[0.02] tracking-tighter leading-[0.85]">
+                    BUSINESS
+                </span>
+            </div>
+
+            <Container className="pt-24 pb-8 md:pt-32 md:pb-12 relative z-10">
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                    variants={containerVariants}
+                    className="flex flex-col gap-20"
+                >
+                    {/* Top CTA Section */}
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
+                        <motion.div variants={itemVariants} className="max-w-4xl">
+                            <h2 className="text-5xl sm:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.85] text-white mb-6">
                                 LET'S BUILD
                                 <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 italic pr-4 pb-2 -mr-4">SOMETHING GREAT.</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 italic pr-6 pb-2 inline-block">SOMETHING GREAT.</span>
                             </h2>
+                        </motion.div>
+                        <motion.div variants={itemVariants} className="shrink-0 lg:pb-6">
                             <Link
                                 href="/contact"
-                                className="group relative inline-flex items-center gap-3 px-10 py-5 rounded-full bg-zinc-950 text-white font-bold tracking-widest text-sm uppercase overflow-hidden hover:scale-105 transition-all duration-500"
+                                className="group relative inline-flex items-center gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-white text-zinc-950 font-bold tracking-widest text-xs sm:text-sm uppercase overflow-hidden hover:scale-105 shadow-[0_4px_30px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_40px_rgba(255,255,255,0.2)] transition-all duration-500 ease-out"
                             >
-                                <span className="relative z-10">Start a Conversation</span>
-                                <ArrowUpRight className="relative z-10 h-5 w-5 group-hover:rotate-45 group-hover:text-blue-400 transition-all duration-300" />
-                                <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
+                                <span className="relative z-10 group-hover:text-white transition-colors duration-500">Start a Conversation</span>
+                                <ArrowUpRight className="relative z-10 h-5 w-5 group-hover:rotate-45 group-hover:text-white transition-all duration-500" />
+                                <div className="absolute inset-0 bg-[var(--color-brand)] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
                             </Link>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    {/* Architectural Links Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 pt-16 border-t border-black/5">
-                        
-                        {/* Brand Space */}
-                        <div className="col-span-1 md:col-span-1">
+                    {/* Links & Info Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-8 pt-16 border-t border-white/10">
+                        {/* Brand Column */}
+                        <motion.div variants={itemVariants} className="md:col-span-12 lg:col-span-4">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="h-10 w-10 text-white bg-blue-600 rounded-[10px] flex items-center justify-center font-black tracking-tighter text-sm shadow-lg shadow-blue-600/30">
-                                    SYB
-                                </div>
-                                <span className="font-black tracking-tight text-lg text-zinc-900">Scale Your Business</span>
+                                <img
+                                    src="/SYB-logo-dark-theme-1.png"
+                                    alt="Scale Your Business Logo"
+                                    className="h-10 w-10 object-contain"
+                                />
+                                <span className="font-black tracking-tight text-xl text-white">Scale Your Business</span>
                             </div>
-                            <p className="text-sm text-zinc-500 leading-relaxed max-w-[280px] font-medium">
-                                Engineering & creative team operating across
-                                <br />
-                                <strong className="text-zinc-900">India · Dubai · United States</strong>
+                            <p className="text-zinc-400 leading-relaxed font-medium mb-8 max-w-sm">
+                                Engineering & creative team operating across <span className="text-white font-semibold">India · Dubai · USA</span>. We partner with founders to build scalable digital infrastructure.
                             </p>
-                        </div>
+                        </motion.div>
 
                         {/* Navigation Columns */}
-                        {Object.entries(footerLinks).map(([category, links], i) => (
-                            <div key={category} className="col-span-1">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 mb-8">
-                                    {category}
-                                </h4>
-                                <ul className="space-y-4">
-                                    {links.map((link) => (
-                                        <li key={link.name}>
-                                            <Link
-                                                href={link.href}
-                                                className="group relative inline-block text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors duration-300"
-                                            >
-                                                <span className="relative z-10">{link.name}</span>
-                                                <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-500 transition-all duration-500 group-hover:w-full" />
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
+                        <div className="md:col-span-12 lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-10">
+                            {Object.entries(footerLinks).map(([category, links]) => (
+                                <motion.div key={category} variants={itemVariants} className="flex flex-col">
+                                    <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-blue-400 mb-6">
+                                        {category}
+                                    </h4>
+                                    <ul className="flex flex-col gap-4">
+                                        {links.map((link) => (
+                                            <li key={link.name}>
+                                                <Link
+                                                    href={link.href}
+                                                    className="group text-sm font-semibold text-zinc-400 hover:text-white transition-colors duration-300 inline-flex items-center gap-1.5"
+                                                >
+                                                    {link.name}
+                                                    <ArrowUpRight className="h-3.5 w-3.5 opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 text-blue-400 transition-all duration-300" />
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Massive Background Typography Footer Bottom */}
-                    <div className="mt-32 pt-8 border-t border-black/5 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                        <p className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">
+                    {/* Footer Bottom */}
+                    <motion.div variants={itemVariants} className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <p className="text-xs font-semibold tracking-widest text-zinc-500 uppercase text-center md:text-left">
                             © {new Date().getFullYear()} SCALE YOUR BUSINESS.
                         </p>
-                        <div className="flex gap-8">
-                            <Link href="/privacy-policy" className="text-xs font-bold tracking-widest text-zinc-400 uppercase hover:text-blue-600 transition-colors">
+                        <div className="flex gap-6">
+                            <Link href="/privacy-policy" className="text-xs font-bold tracking-widest text-zinc-500 uppercase hover:text-white transition-colors">
                                 Privacy
                             </Link>
-                            <Link href="/terms" className="text-xs font-bold tracking-widest text-zinc-400 uppercase hover:text-blue-600 transition-colors">
+                            <Link href="/terms-of-service" className="text-xs font-bold tracking-widest text-zinc-500 uppercase hover:text-white transition-colors">
                                 Terms
                             </Link>
                         </div>
-                        
-                        {/* Hidden massive "SYB" watermark behind footer base */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-black text-zinc-900/5 tracking-tighter pointer-events-none select-none -z-10">
-                            SCALE YOUR BUSINESS
-                        </div>
-                    </div>
-
-                </Container>
-            </motion.div>
+                    </motion.div>
+                </motion.div>
+            </Container>
         </footer>
     )
 }

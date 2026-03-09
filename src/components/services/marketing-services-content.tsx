@@ -133,8 +133,25 @@ export function MarketingServicesContent() {
     })
     const intelLineHeight = useTransform(intelScroll, [0, 0.5], ["0%", "100%"])
 
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer
+            }
+        }))
+    }
+
     return (
         <div className="bg-[var(--color-bg)] text-[var(--color-text)] relative overflow-hidden">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
 
             {/* ═══════════════════════════════════════
                  HERO — IMMERSIVE ENTRY SEQUENCE
@@ -207,14 +224,19 @@ export function MarketingServicesContent() {
                             >
                                 Attention.
                             </motion.h1>
-                            <motion.p
+                            <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 1.5, delay: 1 }}
-                                className="text-white/50 font-medium text-lg md:text-xl max-w-sm mt-6 md:mt-0 md:mb-4 leading-relaxed"
+                                className="flex flex-col gap-4 mt-6 md:mt-0 md:mb-4 max-w-sm"
                             >
-                                AI Visuals. Retention Scripts. Data-Driven Influencer Campaigns. Engineered to command market share.
-                            </motion.p>
+                                <p className="text-white/50 font-medium text-lg leading-relaxed">
+                                    AI Visuals. Retention Scripts. Data-Driven Influencer Campaigns. Engineered to command market share.
+                                </p>
+                                <p className="text-white/40 text-[13px] font-medium leading-relaxed">
+                                    <strong className="text-white/70">Scale Your Business</strong> is a performance and growth marketing agency in India. We scale DTC brands and B2B startups across Delhi, Mumbai, and Bangalore using advanced AI-driven content and conversion-focused paid social strategies.
+                                </p>
+                            </motion.div>
                         </div>
                     </div>
 
@@ -558,6 +580,26 @@ export function MarketingServicesContent() {
                         </div>
                         <div>
                             <FAQAccordion items={faqs} />
+                        </div>
+                    </div>
+                </Container>
+            </section>
+
+            {/* ─── INTERNAL LINKS ───────────────────────────────────────── */}
+            <section className="py-16 bg-[#FAFAFA] border-y border-[var(--color-border)]">
+                <Container>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tight">Convert Traffic</h3>
+                            <p className="text-gray-500 max-w-xl">Drive all this new attention to a high-converting custom website or app.</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <Link href="/web-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                Web Development <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/app-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                App Development <ArrowRight className="w-4 h-4" />
+                            </Link>
                         </div>
                     </div>
                 </Container>

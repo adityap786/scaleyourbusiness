@@ -301,8 +301,10 @@ const LightPillar: React.FC<LightPillarProps> = ({
     let lastTime = performance.now();
     const targetFPS = effectiveQuality === 'low' ? 30 : 60;
     const frameTime = 1000 / targetFPS;
+    let isVisible = false;
 
     const animate = (currentTime: number) => {
+      if (!isVisible) return;
       if (!materialRef.current || !rendererRef.current || !sceneRef.current || !cameraRef.current) return;
 
       const deltaTime = currentTime - lastTime;
@@ -321,7 +323,26 @@ const LightPillar: React.FC<LightPillarProps> = ({
 
       rafRef.current = requestAnimationFrame(animate);
     };
-    rafRef.current = requestAnimationFrame(animate);
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!isVisible) {
+            isVisible = true;
+            lastTime = performance.now();
+            rafRef.current = requestAnimationFrame(animate);
+          }
+        } else {
+          isVisible = false;
+          if (rafRef.current) {
+            cancelAnimationFrame(rafRef.current);
+            rafRef.current = null;
+          }
+        }
+      });
+    }, { threshold: 0 });
+
+    observer.observe(container);
 
     let resizeTimeout: number | null = null;
     const handleResize = () => {
@@ -341,6 +362,7 @@ const LightPillar: React.FC<LightPillarProps> = ({
     window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
+      observer.disconnect();
       window.removeEventListener('resize', handleResize);
       if (interactive) {
         container.removeEventListener('mousemove', handleMouseMove);

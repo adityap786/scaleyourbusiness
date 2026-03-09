@@ -205,8 +205,25 @@ const stats = [
 export function WebDevContent() {
     const heroRef = useRef<HTMLDivElement>(null)
 
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': faq.answer
+            }
+        }))
+    }
+
     return (
         <div className="bg-[var(--color-bg)]">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
 
             {/* ─── HERO ─────────────────────────────────────────────────── */}
             <div ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
@@ -220,7 +237,7 @@ export function WebDevContent() {
                         interactive={true}
                         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
                     />
-                    
+
                     <div className="absolute inset-0 pointer-events-none bg-black/40" />
                 </div>
 
@@ -250,12 +267,21 @@ export function WebDevContent() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
-                            className="max-w-3xl mx-auto text-xl md:text-2xl text-white/70 mb-12 font-medium leading-relaxed tracking-tight text-balance"
+                            className="max-w-3xl mx-auto text-xl md:text-2xl text-white/70 mb-8 font-medium leading-relaxed tracking-tight text-balance"
                         >
-                            High-performance, ultra-fast, visually stunning web platforms designed to 
-                            <span className="text-white"> captivate users</span> and 
+                            High-performance, ultra-fast, visually stunning web platforms designed to
+                            <span className="text-white"> captivate users</span> and
                             <span className="text-white"> scale businesses.</span>
                         </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8, duration: 0.8 }}
+                            className="max-w-4xl mx-auto text-sm md:text-base text-white/50 mb-12 leading-relaxed font-body"
+                        >
+                            <p><strong>Scale Your Business</strong> is a leading digital infrastructure agency in India specializing in Website Development. We help companies build high-performance Next.js websites, scalable Shopify stores, and automation systems that streamline business operations. We work with startups and businesses across India including Delhi, Bangalore, Mumbai, Pune, and Hyderabad, as well as global partners.</p>
+                        </motion.div>
 
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -318,22 +344,22 @@ export function WebDevContent() {
             {/* ─── ARCHITECTURAL STACK ────────────────────────────── */}
             <section className="bg-white py-32 md:py-48 relative z-20 overflow-hidden isolate border-y-[3px] border-black">
                 {/* SVG Noise Overlay */}
-                <div className="absolute inset-0 pointer-events-none z-[-1] opacity-[0.03] mix-blend-multiply" 
+                <div className="absolute inset-0 pointer-events-none z-[-1] opacity-[0.03] mix-blend-multiply"
                     style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}>
                 </div>
 
                 <Container>
                     <div className="mb-24 md:mb-40 flex flex-col md:flex-row gap-10 justify-between items-start md:items-end relative z-10 w-full">
-                        <motion.h2 
+                        <motion.h2
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                             className="text-[4.5rem] md:text-[8rem] xl:text-[10rem] font-black uppercase tracking-tighter text-black leading-[0.8] selection:bg-[#3b82f6] selection:text-white"
                         >
-                            The <br/> <span className="text-[#3b82f6] italic">Stack.</span>
+                            The <br /> <span className="text-[#3b82f6] italic">Stack.</span>
                         </motion.h2>
-                        
+
                         <motion.div
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -357,8 +383,8 @@ export function WebDevContent() {
                                 label: "CUSTOM-CODED",
                                 title: "The Ultimate Engine.",
                                 text: "Built from scratch with Next.js & React. No platform lock-in. No recurring fees. Infinite scale constraint-free.",
-                                features: ["Zero monthly fees — own it outright", "API & CRM Backend Integrations", "Perfect SEO, GEO & AEO signals", "100/100 Core Web Vitals"],
-                                price: "Starts at ₹45,000",
+                                features: ["Performance Engineered for Conversions", "API & CRM Backend Integrations", "Perfect SEO, GEO & AEO signals", "100/100 Core Web Vitals"],
+                                price: "Starts at ₹120,000",
                                 stats: "Next.js • React • PostgreSQL",
                                 best: true
                             },
@@ -378,7 +404,7 @@ export function WebDevContent() {
                                 title: "Rapid Deployment.",
                                 text: "The most cost-effective way to get a professional, scroll-animated website live fast. Self-editable architecture.",
                                 features: ["Fluid scroll animations", "Visual self-editing engine", "Fastest time to market", "Built-in marketing tools"],
-                                price: "Starts at ₹25,000",
+                                price: "Starts at ₹49,000",
                                 stats: "Velo • Editor X",
                                 best: false
                             },
@@ -388,14 +414,14 @@ export function WebDevContent() {
                                 title: "Motion & Art.",
                                 text: "Jaw-dropping immersive websites for studios, creatives, and startups that refuse to be visually ordinary.",
                                 features: ["Cinematic spatial animations", "Micro-interaction engines", "Art-direction level UI", "Seamless 3D integrations"],
-                                price: "Starts at ₹35,000",
+                                price: "Starts at ₹150,000",
                                 stats: "React • Framer Motion",
                                 best: false
                             }
                         ].map((plat, idx) => {
                             const isEven = idx % 2 !== 0;
                             return (
-                                <motion.div 
+                                <motion.div
                                     key={plat.id}
                                     initial={{ opacity: 0, y: 120 }}
                                     whileInView={{ opacity: 1, y: 0 }}
@@ -419,7 +445,7 @@ export function WebDevContent() {
                                             <span className="block text-sm font-bold tracking-widest uppercase opacity-60 mb-3 mix-blend-difference">Core Base</span>
                                             <span className="text-xl md:text-2xl font-black tracking-tight mix-blend-difference">{plat.stats}</span>
                                         </div>
-                                        
+
                                         {plat.best && (
                                             <div className="absolute top-6 right-6 z-10 bg-[#3b82f6] text-white px-5 py-2 text-sm font-black uppercase tracking-widest border-2 border-white shadow-[-6px_6px_0px_0px_#fff] rotate-3 group-hover:-rotate-3 group-hover:scale-110 transition-transform duration-500">
                                                 Best Choice
@@ -494,6 +520,26 @@ export function WebDevContent() {
                         <p className="text-[var(--color-text-secondary)]">Everything you need to know about our web development process.</p>
                     </div>
                     <FAQAccordion items={faqs} />
+                </Container>
+            </section>
+
+            {/* ─── INTERNAL LINKS ───────────────────────────────────────── */}
+            <section className="py-16 bg-white border-y border-gray-100">
+                <Container>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div>
+                            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tight">Scale Further</h3>
+                            <p className="text-gray-500 max-w-xl">Once your custom website is live, expand your digital infrastructure with our other core services.</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <Link href="/app-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                App Development <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/saas-development" className="text-sm font-bold uppercase tracking-widest text-[#3b82f6] hover:text-black transition-colors flex items-center gap-2">
+                                SaaS Platforms <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
                 </Container>
             </section>
 

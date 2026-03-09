@@ -1,11 +1,10 @@
-import { Header } from "@/components/layout/header"
-import { Footer } from "@/components/layout/footer"
 import { Metadata } from "next"
 import { MarketingServicesContent } from "@/components/services/marketing-services-content"
 
 export const metadata: Metadata = {
-    title: "AI Visuals, Script Writing & Influencer Marketing | Scale Your Business",
-    description: "Immersive marketing operations: scale your brand with stunning AI-generated product visuals, high-converting video scripts, and data-driven Influencer campaigns.",
+    title: "Digital & Performance Marketing Agency India | Lead Gen",
+    description: "SYB is a performance and growth marketing agency in India. We run data-driven Meta/Google ad campaigns and SEO to generate high-quality B2B and B2C leads.",
+    keywords: "digital marketing agency India, performance marketing services, growth marketing agency, lead generation marketing agency, Scale Your Business",
 }
 
 export default function MarketingServicesPage() {
@@ -23,13 +22,11 @@ export default function MarketingServicesPage() {
 
     return (
         <>
-            <Header />
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
             />
             <MarketingServicesContent />
-            <Footer />
         </>
     )
 }

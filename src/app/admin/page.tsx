@@ -4,85 +4,70 @@ import { ArrowUpRight } from "lucide-react"
 export default function AdminDashboard() {
     return (
         <div>
-            <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-black mb-8">Dashboard</h1>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-                <Card className="bg-white/5 border-white/10 text-white">
+                <Card className="bg-white border-gray-200 shadow-sm text-black">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <span className="text-xs text-green-500 font-bold">+20.1%</span>
+                        <CardTitle className="text-sm font-medium text-gray-600">Total Revenue</CardTitle>
+                        <span className="text-xs text-gray-400 font-medium">Pending Data</span>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">₹45,231.89</div>
-                        <p className="text-xs text-gray-400">from last month</p>
+                        <div className="text-2xl font-bold">—</div>
+                        <p className="text-xs text-gray-500 mt-1">Connect Stripe to view</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/5 border-white/10 text-white">
+                <Card className="bg-white border-gray-200 shadow-sm text-black">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Leads</CardTitle>
-                        <span className="text-xs text-green-500 font-bold">+180.1%</span>
+                        <CardTitle className="text-sm font-medium text-gray-600">Active Leads</CardTitle>
+                        <span className="text-xs text-gray-400 font-medium">Analytics</span>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+2350</div>
-                        <p className="text-xs text-gray-400">from last month</p>
+                        <div className="text-2xl font-bold">—</div>
+                        <p className="text-xs text-gray-500 mt-1">Visit Leads tab</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/5 border-white/10 text-white">
+                <Card className="bg-white border-gray-200 shadow-sm text-black">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                        <span className="text-xs text-green-500 font-bold">+19%</span>
+                        <CardTitle className="text-sm font-medium text-gray-600">Page Views</CardTitle>
+                        <span className="text-xs text-gray-400 font-medium">Vercel Analytics</span>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+12,234</div>
-                        <p className="text-xs text-gray-400">from last month</p>
+                        <div className="text-2xl font-bold">—</div>
+                        <p className="text-xs text-gray-500 mt-1">Visit Vercel dashboard</p>
+                    </CardContent>
+                </Card>
+                <Card className="bg-white border-gray-200 shadow-sm text-black">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-gray-600">Admin</CardTitle>
+                        <span className="text-xs text-gray-400 font-medium">System</span>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">Online</div>
+                        <p className="text-xs text-green-600 font-medium mt-1">All systems operational</p>
                     </CardContent>
                 </Card>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4 bg-white/5 border-white/10 text-white">
+                <Card className="col-span-4 bg-white border-gray-200 shadow-sm text-black">
                     <CardHeader>
                         <CardTitle>Recent Leads</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-8">
-                            {[
-                                { name: "Rahul Sharma", email: "rahul@techstart.in", amount: "₹25,000", status: "Interested" },
-                                { name: "Priya Patel", email: "priya@designstudio.com", amount: "₹15,000", status: "Negotiating" },
-                                { name: "Amit Kumar", email: "amit@construct.io", amount: "₹1,50,000", status: "Closed" },
-                                { name: "Sneha Gupta", email: "sneha@marketing.agency", amount: "₹45,000", status: "New" },
-                                { name: "Vikram Singh", email: "vikram@logistics.co", amount: "₹80,000", status: "Interested" },
-                            ].map((lead, i) => (
-                                <div key={i} className="flex items-center">
-                                    <div className="ml-4 space-y-1">
-                                        <p className="text-sm font-medium leading-none">{lead.name}</p>
-                                        <p className="text-sm text-gray-400">{lead.email}</p>
-                                    </div>
-                                    <div className="ml-auto font-medium">{lead.amount}</div>
-                                </div>
-                            ))}
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <p className="text-gray-500 mb-4">View your full list of contact submissions in the native leads view.</p>
+                            <a href="/admin/leads" className="text-sm font-medium text-[var(--color-brand)] hover:underline">Go to Leads →</a>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="col-span-3 bg-white/5 border-white/10 text-white">
+                <Card className="col-span-3 bg-white border-gray-200 shadow-sm text-black">
                     <CardHeader>
                         <CardTitle>Content Performance</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-8">
-                            {[
-                                { name: "SaaS MVP Guide", views: "2,345", trend: "+12%" },
-                                { name: "AI Agents 2026", views: "1,982", trend: "+8%" },
-                                { name: "Next.js vs WP", views: "1,432", trend: "+24%" },
-                            ].map((post, i) => (
-                                <div key={i} className="flex items-center justify-between">
-                                    <span className="text-sm font-medium text-gray-300">{post.name}</span>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-sm text-white">{post.views}</span>
-                                        <span className="text-xs text-green-500">{post.trend}</span>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <p className="text-gray-500 mb-4">Integrate Google Analytics to track blog performance metrics.</p>
                         </div>
                     </CardContent>
                 </Card>
