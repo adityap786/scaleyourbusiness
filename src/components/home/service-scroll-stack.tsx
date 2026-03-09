@@ -587,7 +587,8 @@ export function ServiceScrollStack() {
                 scrollTrigger: {
                     trigger: stage,
                     start: "top top",
-                    end: () => `+=${(numCards - 1) * 150}vh`,
+                    // Massively extend scroll distance so transitions play very slowly
+                    end: () => `+=${numCards * (window.innerWidth < 768 ? 250 : 150)}vh`,
                     pin: pinContainer,
                     scrub: 1,
                     refreshPriority: 1, // Process second — after hero, before process-timeline

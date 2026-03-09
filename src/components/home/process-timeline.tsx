@@ -1,7 +1,7 @@
 "use client"
 
 import { Container } from "@/components/ui/container"
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -138,8 +138,18 @@ export function ProcessTimeline() {
     const nodesRef = useRef<(HTMLDivElement | null)[]>([])
     const poseRef = useRef(0)
 
+    // ── Mobile Detection ──
+    const [isMobile, setIsMobile] = useState<boolean | null>(null)
+
     useEffect(() => {
-        if (typeof window === "undefined") return
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
+
+    useEffect(() => {
+        if (typeof window === "undefined" || isMobile === null || isMobile) return
 
         const section = sectionRef.current
         const pin = pinRef.current
@@ -270,9 +280,55 @@ export function ProcessTimeline() {
 
         return () => {
             clearTimeout(refreshTimer)
-            ctx.revert() // Clean up only this section's GSAP instances
         }
-    }, [])
+    }, [isMobile])
+
+    if (isMobile === null) return null // Prevent hydration mismatch
+
+    if (isMobile) {
+        // ── NATIVE HORIZONTAL SCROLL FOR MOBILE ──
+        return (
+            <section className="relative bg-[#050505] py-24 overflow-hidden">
+                <div className="pl-6 pr-4 mb-10 w-full relative z-10">
+                    <span className="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase text-[#3b82f6] bg-[#3b82f6]/10 border border-[#3b82f6]/20 mb-4 shadow-sm">
+                        The Master Plan
+                    </span>
+                    <h2 className="text-[2.5rem] leading-[1.05] font-black tracking-tight text-white mb-4">
+                        Simple. Transparent.<br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6]">Effective.</span>
+                    </h2>
+                    <p className="text-sm text-white/50 font-medium">Swipe to see how we build your systems.</p>
+                </div>
+
+                <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-6 pb-12 w-full no-scrollbar relative z-10">
+                    {steps.map((step) => (
+                        <div
+                            key={step.id}
+                            className="snap-center shrink-0 w-[85vw] relative bg-black/40 backdrop-blur-md rounded-[2rem] border border-white/5 p-8 flex flex-col justify-center overflow-hidden"
+                            style={{ boxShadow: "inset 0 0 40px rgba(139,92,246,0.05)" }}
+                        >
+                            {/* Ambient Glow inside card */}
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#3b82f6]/20 rounded-full blur-3xl" />
+
+                            <h3 className="text-[100px] font-black text-white/[0.03] absolute -top-8 -right-4 select-none pointer-events-none">
+                                {step.id}
+                            </h3>
+
+                            <h4 className="text-3xl font-black text-white mb-4 tracking-tight relative z-10">
+                                {step.title}
+                            </h4>
+
+                            <div className="h-1 w-16 bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6] mb-6 rounded-full relative z-10" />
+
+                            <p className="text-base text-white/70 font-medium leading-relaxed relative z-10">
+                                {step.subtitle}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        )
+    }
 
     return (
         <section ref={sectionRef} className="relative bg-[#050505]">

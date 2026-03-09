@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+import { MobileHero } from "./mobile-hero"
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger)
@@ -70,8 +72,19 @@ export function Hero() {
     const imagesRef = useRef<HTMLImageElement[]>([])
     const currentFrameRef = useRef(0)
 
+    // ── Mobile Detection ──
+    const [isMobile, setIsMobile] = useState<boolean | null>(null)
+
     useEffect(() => {
-        if (typeof window === "undefined") return
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
+
+    useEffect(() => {
+        if (typeof window === "undefined" || isMobile === null || isMobile) return
+
 
         const section = sectionRef.current
         const canvas = canvasRef.current
@@ -215,6 +228,9 @@ export function Hero() {
             gsapCtx.revert() // Clean up only this section's GSAP instances
         }
     }, [])
+
+    if (isMobile === null) return null // Prevent hydration mismatch
+    if (isMobile) return <MobileHero />
 
     return (
         <section ref={sectionRef} className="relative bg-black">

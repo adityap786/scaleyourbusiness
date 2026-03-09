@@ -52,7 +52,7 @@ export function TrustBuilder() {
             <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-blue-100/50 rounded-full blur-[140px] pointer-events-none -z-10" />
 
             {/* Massive Parallax Background Typography */}
-            <div className="relative md:absolute inset-0 flex flex-col justify-center items-center pt-8 md:pt-[20vh] pointer-events-none z-0 px-4 md:px-0 mb-12 md:mb-0">
+            <div className="relative md:absolute inset-0 flex flex-col justify-center items-center pt-8 md:pt-[20vh] pointer-events-none z-20 md:z-0 px-4 md:px-0 mb-12 md:mb-0">
                 <motion.div style={{ y: titleY, opacity: titleOpacity }} className="text-center">
                     <p className="text-[11px] sm:text-sm font-bold tracking-[0.4em] uppercase text-blue-600 mb-6 md:mb-8">
                         Who We Serve
