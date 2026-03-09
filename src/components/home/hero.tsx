@@ -90,9 +90,11 @@ export function Hero() {
         resizeCanvas()
         window.addEventListener("resize", resizeCanvas)
 
-        // ── Preload frames progressively ──
+        // ── Grab frames from browser cache ──
+        // The global <Preloader> guarantees all 140 frames are fully loaded
+        // before this component ever mounts. We just need to create the Image
+        // objects to pass to the canvas.
         const images: HTMLImageElement[] = []
-        let loadedCount = 0
 
         function drawFrame(index: number) {
             if (!ctx2d || !canvas) return
@@ -122,30 +124,18 @@ export function Hero() {
             currentFrameRef.current = index
         }
 
-        // Recursive sequential loader to prevent network jamming
-        function loadNextFrame(index: number) {
-            if (index >= TOTAL_FRAMES) return // All frames loaded
-
+        for (let i = 0; i < TOTAL_FRAMES; i++) {
             const img = new Image()
-            img.src = frameSrc(index + 1)
-            img.onload = () => {
-                images[index] = img
-                loadedCount++
-                if (index === 0) {
-                    drawFrame(0) // Draw first frame immediately
-                }
-                // Load the next frame only after this one finishes
-                loadNextFrame(index + 1)
-            }
-            img.onerror = () => {
-                // If a frame fails, skip it and try the next one
-                images[index] = images[Math.max(0, index - 1)] // Fallback to previous
-                loadNextFrame(index + 1)
-            }
+            img.src = frameSrc(i + 1)
+            images[i] = img
         }
 
-        // Start the loading sequence
-        loadNextFrame(0)
+        // Draw first frame immediately
+        if (images[0]) {
+            // Slight delay to ensure canvas is ready
+            setTimeout(() => drawFrame(0), 10)
+        }
+
 
         imagesRef.current = images
 

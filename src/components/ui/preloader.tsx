@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, useRef } from "react"
 const MIN_DISPLAY_MS = 2200     // Minimum loader visibility (ms)
 const RING_BUILD_MS = 1400      // Time for ring to draw around logo
 const FADE_OUT_MS = 800         // Fade-out duration
-const HERO_FRAME_COUNT = 10     // Preload first N hero frames for instant first paint
+const TOTAL_FRAMES = 140        // Total Hero frames to preload
 
 export function Preloader({ onComplete }: { onComplete: () => void }) {
     const [phase, setPhase] = useState<"logo" | "ring" | "spin" | "pulse" | "exit">("logo")
@@ -14,48 +14,68 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
     const startTime = useRef(Date.now())
     const hasCompleted = useRef(false)
 
-    // ── Asset loading tracker ──
+    // ── Asset loading tracker (Sequential Batch Loading) ──
     const checkAssets = useCallback((): Promise<void> => {
         return new Promise((resolve) => {
-            let loaded = 0
-            const criticalImages: string[] = []
+            const BATCH_SIZE = 5 // Load 5 frames at a time to not block network but keep it fast
+            let currentBatch = 0
 
-            // Preload first N hero frames
-            for (let i = 1; i <= HERO_FRAME_COUNT; i++) {
-                criticalImages.push(`/hero-frames/ezgif-frame-${String(i).padStart(3, "0")}.png`)
-            }
+            // +1 for the logo
+            const totalAssets = TOTAL_FRAMES + 1
+            let loadedCount = 0
 
-            // Add logo
-            criticalImages.push("/SYB-logo-png.png")
-
-            const total = criticalImages.length
-            let resolved = false
-
-            const tick = () => {
-                if (resolved) return
-                loaded++
-                setProgress(Math.min(0.95, loaded / total))
-                if (loaded >= total) {
-                    resolved = true
+            const updateProgress = () => {
+                loadedCount++
+                setProgress(Math.min(0.95, loadedCount / totalAssets))
+                if (loadedCount >= totalAssets) {
                     resolve()
                 }
             }
 
-            criticalImages.forEach((src) => {
-                const img = new Image()
-                img.onload = tick
-                img.onerror = tick // Don't block on errors
-                img.src = src
-            })
+            // Load logo first
+            const logoImg = new Image()
+            logoImg.onload = updateProgress
+            logoImg.onerror = updateProgress
+            logoImg.src = "/SYB-logo-png.png"
 
-            // Safety timeout — never block forever
-            setTimeout(() => {
-                if (!resolved) {
-                    resolved = true
-                    setProgress(1)
-                    resolve()
+            // Sequential batch loader for frames
+            const loadNextBatch = () => {
+                if (currentBatch * BATCH_SIZE >= TOTAL_FRAMES) return
+
+                const startIdx = currentBatch * BATCH_SIZE + 1
+                const endIdx = Math.min(startIdx + BATCH_SIZE - 1, TOTAL_FRAMES)
+
+                let batchLoaded = 0
+                const framesInBatch = endIdx - startIdx + 1
+
+                for (let i = startIdx; i <= endIdx; i++) {
+                    const img = new Image()
+                    img.onload = () => {
+                        updateProgress()
+                        batchLoaded++
+                        if (batchLoaded === framesInBatch) {
+                            currentBatch++
+                            loadNextBatch()
+                        }
+                    }
+                    img.onerror = () => {
+                        updateProgress()
+                        batchLoaded++
+                        if (batchLoaded === framesInBatch) {
+                            currentBatch++
+                            loadNextBatch()
+                        }
+                    }
+                    img.src = `/hero-frames/ezgif-frame-${String(i).padStart(3, "0")}.png`
                 }
-            }, 8000)
+            }
+
+            // Start loading frames
+            loadNextBatch()
+
+            // Removed the 8-second safety timeout. We *must* wait for all frames 
+            // so scrubbing doesn't freeze midway. The user specifically requested
+            // the lazy loader to only end when ALL frames are loaded.
         })
     }, [])
 
