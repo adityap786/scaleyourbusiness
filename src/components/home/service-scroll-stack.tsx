@@ -668,8 +668,8 @@ export function ServiceScrollStack() {
                 </filter>
             </svg>
 
-            {/* Section Heading — outside the trigger so it scrolls naturally before cards pin */}
-            <div className="pt-16 pb-4 w-full flex flex-col items-center justify-center text-center px-4 relative z-10">
+            {/* Section Heading — tightened padding on mobile so it sits closer to previous section */}
+            <div className="pt-8 md:pt-16 pb-4 w-full flex flex-col items-center justify-center text-center px-4 relative z-10">
                 <span className="inline-block px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-4 md:mb-6 shadow-sm">
                     Our Core Services
                 </span>
@@ -689,15 +689,16 @@ export function ServiceScrollStack() {
                 <div ref={pinRef} className="w-full h-screen overflow-hidden flex items-center justify-center">
 
                     {/* LIQUID DATA STREAM BACKGROUND */}
-                    {/* CSS URL filters liquefy the geometric DOM shapes inside */}
-                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-0" style={{ filter: 'url(#liquid-goo)' }}>
+                    {/* CSS URL filters liquefy the geometric DOM shapes inside. Disabled on mobile for GPU perf. */}
+                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-0" style={{ filter: viewport.vw >= 768 ? 'url(#liquid-goo)' : 'none' }}>
                         <div ref={plasmaScaleLayer} className="relative w-full max-w-[500px] md:max-w-[800px] aspect-square">
                             <div ref={plasmaSpinLayer} className="absolute inset-0">
                                 {/* The liquid droplets — high blur combined with SVG Gooey filter creates visceral fluid mechanics */}
-                                <div ref={blob1} className="absolute top-[10%] left-[20%] w-[50%] h-[50%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
-                                <div ref={blob2} className="absolute top-[40%] left-[50%] w-[60%] h-[60%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
-                                <div ref={blob3} className="absolute top-[50%] left-[10%] w-[50%] h-[50%] rounded-full mix-blend-screen blur-[20px] opacity-80" />
-                                <div ref={blob4} className="absolute top-[20%] left-[40%] w-[55%] h-[55%] rounded-full mix-blend-screen blur-[20px] opacity-90" />
+                                {/* mix-blend-screen removed on mobile as it compounds GPU strain with blurs */}
+                                <div ref={blob1} className={`absolute top-[10%] left-[20%] w-[50%] h-[50%] rounded-full blur-[20px] opacity-80 ${viewport.vw >= 768 ? 'mix-blend-screen' : ''}`} />
+                                <div ref={blob2} className={`absolute top-[40%] left-[50%] w-[60%] h-[60%] rounded-full blur-[20px] opacity-80 ${viewport.vw >= 768 ? 'mix-blend-screen' : ''}`} />
+                                <div ref={blob3} className={`absolute top-[50%] left-[10%] w-[50%] h-[50%] rounded-full blur-[20px] opacity-80 ${viewport.vw >= 768 ? 'mix-blend-screen' : ''}`} />
+                                <div ref={blob4} className={`absolute top-[20%] left-[40%] w-[55%] h-[55%] rounded-full blur-[20px] opacity-90 ${viewport.vw >= 768 ? 'mix-blend-screen' : ''}`} />
                             </div>
                         </div>
                     </div>

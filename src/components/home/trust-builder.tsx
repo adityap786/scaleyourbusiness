@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react"
 import { Container } from "@/components/ui/container"
 import { ArrowUpRight } from "lucide-react"
@@ -30,34 +30,42 @@ const cardOffsets = [
 export function TrustBuilder() {
     const sectionRef = useRef<HTMLElement>(null)
     const [hoveredId, setHoveredId] = useState<string | null>(null)
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
 
     const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] })
 
-    // Smooth aggressive motion
-    const titleY = useTransform(scrollYProgress, [0, 1], ["0%", "80%"])
-    const titleOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0])
+    // Smooth aggressive motion (disable parallax totally on mobile for clean flex stack)
+    const titleY = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "0%" : "80%"])
+    const titleOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, isMobile ? 1 : 0])
 
     return (
-        <section ref={sectionRef} className="relative bg-[#FAFAFA] min-h-[140vh] py-32 overflow-hidden flex flex-col items-center">
+        <section ref={sectionRef} className="relative bg-[#FAFAFA] min-h-0 md:min-h-[140vh] py-16 md:py-32 overflow-hidden flex flex-col items-center">
             {/* Ambient Background & Deep Blur */}
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-multiply" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E')" }} />
             <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-blue-100/50 rounded-full blur-[140px] pointer-events-none -z-10" />
 
             {/* Massive Parallax Background Typography */}
-            <div className="absolute inset-0 flex justify-center items-start pt-[20vh] pointer-events-none z-0 px-4">
+            <div className="relative md:absolute inset-0 flex flex-col justify-center items-center pt-8 md:pt-[20vh] pointer-events-none z-0 px-4 md:px-0 mb-12 md:mb-0">
                 <motion.div style={{ y: titleY, opacity: titleOpacity }} className="text-center">
-                    <p className="text-[11px] sm:text-sm font-bold tracking-[0.4em] uppercase text-blue-600 mb-8">
+                    <p className="text-[11px] sm:text-sm font-bold tracking-[0.4em] uppercase text-blue-600 mb-6 md:mb-8">
                         Who We Serve
                     </p>
-                    <h2 className="text-[12vw] sm:text-[9vw] font-black tracking-tighter leading-[0.85] text-zinc-900">
+                    <h2 className="text-[14vw] sm:text-[9vw] font-black tracking-tighter leading-[0.85] text-zinc-900">
                         WE PARTNER WITH <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-br from-zinc-400 to-zinc-200">10X THINKERS.</span>
                     </h2>
                 </motion.div>
             </div>
 
-            <Container className="relative z-10 w-full max-w-7xl mt-[40vh]">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 relative pb-64">
+            <Container className="relative z-10 w-full max-w-7xl mt-0 md:mt-[40vh]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 relative pb-16 md:pb-64 px-4 md:px-0">
                     {clients.map((client, i) => {
                         const offset = cardOffsets[i % cardOffsets.length]
                         // Scroll-based depth & parallax mapping
@@ -65,22 +73,28 @@ export function TrustBuilder() {
                         const isHovered = hoveredId === client.id
                         const isSomethingHovered = hoveredId !== null && !isHovered
 
+                        // On mobile, lock cards cleanly in place
+                        const currentY = isMobile ? 0 : yParallax
+                        const currentX = isMobile ? 0 : offset.x
+                        const initialY = isMobile ? 50 : 100 // Gentler fade-in Y on mobile
+                        const currentRotate = isMobile ? 0 : offset.rotate
+
                         return (
                             <motion.div
                                 key={client.id}
-                                style={{ y: yParallax, x: offset.x }}
-                                initial={{ opacity: 0, y: 100, rotate: offset.rotate * 2 }}
-                                whileInView={{ opacity: 1, y: 0, rotate: offset.rotate }}
-                                viewport={{ once: true, margin: "-5%" }}
-                                transition={{ duration: 1.2, delay: offset.delay, ease: [0.16, 1, 0.3, 1] }}
+                                style={{ y: currentY, x: currentX }}
+                                initial={{ opacity: 0, y: initialY, rotate: isMobile ? 0 : currentRotate * 2 }}
+                                whileInView={{ opacity: 1, y: 0, rotate: currentRotate }}
+                                viewport={{ once: true, margin: isMobile ? "10%" : "-5%" }}
+                                transition={{ duration: 1.2, delay: isMobile ? 0 : offset.delay, ease: [0.16, 1, 0.3, 1] }}
                                 onMouseEnter={() => setHoveredId(client.id)}
                                 onMouseLeave={() => setHoveredId(null)}
                                 className={`
-                                    relative p-8 rounded-[2rem] bg-white/60 backdrop-blur-3xl border border-white 
+                                    relative p-6 md:p-8 rounded-[2rem] bg-white/60 backdrop-blur-3xl border border-white 
                                     shadow-[0_20px_40px_-20px_rgba(0,0,0,0.08)] cursor-crosshair
                                     transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-                                    ${isHovered ? "z-50 scale-110 shadow-[0_40px_80px_-20px_rgba(37,99,235,0.2)] bg-white/95 border-blue-100" : "z-10"}
-                                    ${isSomethingHovered ? "opacity-40 blur-[8px] scale-95 saturate-0" : "opacity-100"}
+                                    ${isHovered ? "z-50 scale-105 md:scale-110 shadow-[0_40px_80px_-20px_rgba(37,99,235,0.2)] bg-white/95 border-blue-100" : "z-10"}
+                                    ${isSomethingHovered ? "opacity-40 blur-sm md:blur-[8px] scale-95 md:scale-95 saturate-0" : "opacity-100"}
                                 `}
                             >
                                 <div className="flex items-center justify-between mb-10">
