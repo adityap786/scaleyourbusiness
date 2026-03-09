@@ -12,6 +12,14 @@ serve(async (req) => {
   }
 
   try {
+    const serviceApiKey = req.headers.get('x-service-api-key');
+    if (!serviceApiKey || serviceApiKey !== Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized. Missing or invalid service execution key." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
     const body = await req.json();
     const {
       name,
