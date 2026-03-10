@@ -212,111 +212,46 @@ export function Header() {
             <AnimatePresence mode="wait">
                 {mobileOpen && (
                     <motion.div
-                        initial={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
-                        animate={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)" }}
-                        exit={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)", transition: { delay: 0.2, duration: 0.5, ease: [0.76, 0, 0.24, 1] } }}
-                        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-                        className="fixed inset-0 z-40 bg-[var(--color-bg)] lg:hidden flex flex-col justify-start px-6 pt-32 pb-8 overflow-y-auto"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20, transition: { duration: 0.3 } }}
+                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        className="fixed inset-0 z-40 bg-[var(--color-bg)] lg:hidden flex flex-col justify-start px-8 pt-32 pb-12 overflow-y-auto"
                     >
                         {/* Ambient Glow */}
-                        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[var(--color-brand)]/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
-                        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] bg-[var(--color-brand)]/5 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/2" />
+                        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[var(--color-brand)]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
-                        <nav className="relative z-10 flex flex-col w-full max-w-md mx-auto h-full">
-                            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-[var(--color-text-muted)] mb-8 block ml-2">Navigation</span>
+                        <nav className="relative z-10 flex flex-col w-full max-w-sm mx-auto h-full mt-4">
 
-                            <div className="flex-1 flex flex-col gap-2">
-                                {/* Services Category */}
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.1, duration: 0.5 }}
-                                    className="border-b border-[var(--color-border)]/40 overflow-hidden"
-                                >
-                                    <button
-                                        onClick={() => toggleMobileCategory('services')}
-                                        className="w-full flex items-center justify-between py-5 px-2 group"
-                                    >
-                                        <span className="text-3xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">Services</span>
-                                        <ChevronDown className={cn("w-6 h-6 text-[var(--color-text-secondary)] transition-transform duration-300", expandedMobileCategory === 'services' && "rotate-180")} />
-                                    </button>
-                                    <AnimatePresence>
-                                        {expandedMobileCategory === 'services' && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: "auto", opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="px-4 pb-6 flex flex-col gap-5 pt-2"
-                                            >
-                                                {services.map(item => (
-                                                    <Link key={item.title} href={item.href} onClick={() => setMobileOpen(false)} className="group/item">
-                                                        <div className="text-lg font-semibold text-[var(--color-text)] group-hover/item:text-[var(--color-brand)] transition-colors">{item.title}</div>
-                                                        <div className="text-[13px] text-[var(--color-text-secondary)] mt-1">{item.description}</div>
-                                                        <div className="w-0 h-px bg-[var(--color-brand)] mt-2 group-hover/item:w-12 transition-all duration-300" />
-                                                    </Link>
-                                                ))}
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </motion.div>
+                            {/* Main Navigation Links */}
+                            <div className="flex flex-col gap-6">
+                                <span className="text-[11px] uppercase tracking-[0.2em] font-bold text-[var(--color-text-muted)] mb-2">Platform</span>
 
-                                {/* Work Category */}
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.15, duration: 0.5 }}
-                                    className="border-b border-[var(--color-border)]/40 overflow-hidden"
-                                >
-                                    <button
-                                        onClick={() => toggleMobileCategory('work')}
-                                        className="w-full flex items-center justify-between py-5 px-2 group"
-                                    >
-                                        <span className="text-3xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">Work</span>
-                                        <ChevronDown className={cn("w-6 h-6 text-[var(--color-text-secondary)] transition-transform duration-300", expandedMobileCategory === 'work' && "rotate-180")} />
-                                    </button>
-                                    <AnimatePresence>
-                                        {expandedMobileCategory === 'work' && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: "auto", opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="px-4 pb-6 flex flex-col gap-5 pt-2"
-                                            >
-                                                {workItems.map(item => (
-                                                    <Link key={item.title} href={item.href} onClick={() => setMobileOpen(false)} className="group/item">
-                                                        <div className="text-lg font-semibold text-[var(--color-text)] group-hover/item:text-[var(--color-brand)] transition-colors">{item.title}</div>
-                                                        <div className="text-[13px] text-[var(--color-text-secondary)] mt-1">{item.description}</div>
-                                                        <div className="w-0 h-px bg-[var(--color-brand)] mt-2 group-hover/item:w-12 transition-all duration-300" />
-                                                    </Link>
-                                                ))}
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </motion.div>
+                                <MobileMenuLink title="About Us" href="/about" delay={0.1} onClick={() => setMobileOpen(false)} />
+                                <MobileMenuLink title="Pricing Plans" href="/pricing" delay={0.15} onClick={() => setMobileOpen(false)} />
+                                <MobileMenuLink title="Portfolio" href="/work" delay={0.2} onClick={() => setMobileOpen(false)} />
+                                <MobileMenuLink title="Insights & Blog" href="/blog" delay={0.25} onClick={() => setMobileOpen(false)} />
+                            </div>
 
-                                {/* Direct Links */}
-                                {[
-                                    { title: "About Us", href: "/about" },
-                                    { title: "Insights & Blog", href: "/blog" },
-                                    { title: "Pricing Plans", href: "/pricing" },
-                                    { title: "Contact Us", href: "/contact" }
-                                ].map((item, idx) => (
+                            <div className="h-px w-full bg-[var(--color-border)]/50 my-10" />
+
+                            {/* Services List (Flat for elegance) */}
+                            <div className="flex flex-col gap-5">
+                                <span className="text-[11px] uppercase tracking-[0.2em] font-bold text-[var(--color-text-muted)] mb-2">Our Capabilities</span>
+
+                                {services.map((service, idx) => (
                                     <motion.div
-                                        key={item.title}
-                                        initial={{ y: 20, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        transition={{ delay: 0.2 + (idx * 0.05), duration: 0.5 }}
-                                        className="border-b border-[var(--color-border)]/40"
+                                        key={service.title}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.3 + (idx * 0.05), duration: 0.4 }}
                                     >
                                         <Link
-                                            href={item.href}
+                                            href={service.href}
                                             onClick={() => setMobileOpen(false)}
-                                            className="w-full flex items-center justify-between py-5 px-2 group"
+                                            className="text-lg font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors inline-block"
                                         >
-                                            <span className="text-2xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">{item.title}</span>
-                                            <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-[var(--color-brand)]" />
+                                            {service.title}
                                         </Link>
                                     </motion.div>
                                 ))}
@@ -324,14 +259,14 @@ export function Header() {
 
                             {/* Mobile CTA */}
                             <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.4, duration: 0.5 }}
-                                className="mt-8 pb-8"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6, duration: 0.5 }}
+                                className="mt-auto pt-16 pb-4"
                             >
                                 <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                                    <Button className="w-full h-14 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-bold uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(255,255,255,0.1)] group">
-                                        Let's Build Together
+                                    <Button className="w-full h-14 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-bold uppercase tracking-widest text-[11px] shadow-[0_10px_30px_rgba(255,255,255,0.05)] hover:bg-[var(--color-text)]/90 transition-all group">
+                                        Start Your Project
                                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </Link>
@@ -341,6 +276,27 @@ export function Header() {
                 )}
             </AnimatePresence>
         </>
+    )
+}
+
+function MobileMenuLink({ title, href, delay, onClick }: { title: string, href: string, delay: number, onClick: () => void }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        >
+            <Link
+                href={href}
+                onClick={onClick}
+                className="group flex items-center justify-between"
+            >
+                <span className="text-3xl font-black tracking-tight text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors">
+                    {title}
+                </span>
+                <ArrowRight className="w-6 h-6 text-[var(--color-text-muted)] group-hover:text-[var(--color-brand)] group-hover:translate-x-1 transition-all" />
+            </Link>
+        </motion.div>
     )
 }
 

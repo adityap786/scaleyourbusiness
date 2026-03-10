@@ -658,6 +658,34 @@ export function ServiceScrollStack() {
         return () => ctx.revert() // Clean up only this section's GSAP instances
     }, [viewport]) // Automatically rewrite timeline if screen resizes
 
+    if (viewport.vw > 0 && viewport.vw < 768) {
+        return (
+            <section className="relative bg-[#050505] w-full" id="services">
+                <div className="pt-24 pb-8 w-full flex flex-col items-center justify-center text-center px-4 relative z-10">
+                    <span className="inline-block px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase text-[var(--color-brand)] bg-[var(--color-brand)]/10 border border-[var(--color-brand)]/20 mb-4 md:mb-6 shadow-sm">
+                        Our Core Services
+                    </span>
+                    <h2 className="text-[2.5rem] font-black tracking-tighter text-white leading-[1.0] uppercase relative z-10">
+                        Built to<br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400">Scale You</span>
+                    </h2>
+                </div>
+
+                <div className="relative w-full pb-[10vh]">
+                    {CARDS.map(({ Component, id }, i) => (
+                        <div key={id} className="h-[150vh] w-full relative">
+                            <div className="sticky top-[12vh] w-full px-4">
+                                <div className="w-full h-[75vh] rounded-[2.5rem] overflow-hidden bg-black relative border-t border-white/10" style={{ boxShadow: '0 -20px 60px rgba(0,0,0,0.5)' }}>
+                                    <Component />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        )
+    }
+
     return (
         <section className="relative bg-[#050505] w-full" id="services">
             {/* SVG Defs for Gooey Liquid filter */}

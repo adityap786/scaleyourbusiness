@@ -200,6 +200,12 @@ export function MobileHero() {
                         )}
                     </div>
                 ))}
+
+                {/* Global Scroll Indicator (Mobile) */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none opacity-80">
+                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-white/70">Scroll to explore</span>
+                    <div className="w-px h-6 bg-gradient-to-b from-white/70 to-transparent animate-bounce mt-1" />
+                </div>
             </div>
         </section>
     )

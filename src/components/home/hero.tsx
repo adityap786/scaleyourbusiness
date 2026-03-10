@@ -296,6 +296,12 @@ export function Hero() {
                         )}
                     </div>
                 ))}
+
+                {/* Global Scroll Indicator (Desktop) */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none opacity-60">
+                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-white/50">Scroll to explore</span>
+                    <div className="w-px h-6 bg-gradient-to-b from-white/50 to-transparent animate-bounce" />
+                </div>
             </div>
         </section>
     )

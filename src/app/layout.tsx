@@ -124,7 +124,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
-      <body suppressHydrationWarning className="bg-[var(--color-bg)] text-[var(--color-text)] font-body min-h-screen selection:bg-[var(--color-brand)] selection:text-white">
+      <body suppressHydrationWarning className="relative overflow-x-hidden bg-[var(--color-bg)] text-[var(--color-text)] font-body min-h-screen selection:bg-[var(--color-brand)] selection:text-white">
         <SmoothScrollProvider>
           <PreloaderProvider>
             <Header />

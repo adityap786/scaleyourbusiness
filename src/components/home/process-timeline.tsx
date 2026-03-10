@@ -297,7 +297,10 @@ export function ProcessTimeline() {
                         Simple. Transparent.<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6]">Effective.</span>
                     </h2>
-                    <p className="text-sm text-white/50 font-medium">Swipe to see how we build your systems.</p>
+                    <p className="text-sm text-white/50 font-medium mb-3">Swipe to see how we build your systems.</p>
+                    <div className="flex items-center gap-2 text-[#3b82f6] animate-pulse">
+                        <span className="text-[10px] uppercase font-black tracking-[0.2em]">← Swipe →</span>
+                    </div>
                 </div>
 
                 <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-6 pb-12 w-full no-scrollbar relative z-10">
