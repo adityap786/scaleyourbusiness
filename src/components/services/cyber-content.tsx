@@ -9,6 +9,7 @@ import { AestheticTestimonials } from "@/components/ui/aesthetic-testimonials"
 import { CTASection } from "@/components/home/cta-section"
 import { FAQAccordion } from "@/components/ui/faq-accordion"
 import { ArrowRight } from "lucide-react"
+import { DecryptedText } from "@/components/ui/DecryptedText"
 
 const LightPillar = dynamic(() => import("@/components/ui/light-pillar"), { ssr: false })
 
@@ -194,7 +195,8 @@ export function CyberContent() {
                                 transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                                 className="text-[3.5rem] md:text-[6.5rem] lg:text-[8rem] font-black uppercase tracking-tighter leading-[0.85] mb-8"
                             >
-                                Unbreakable <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 italic">Security.</span>
+                                <DecryptedText text="UNBREAKABLE" speed={60} maxIterations={12} animateOn="view" className="block" />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 italic"><DecryptedText text="SECURITY." speed={60} maxIterations={12} animateOn="view" /></span>
                             </motion.h1>
 
                             <motion.p
@@ -203,7 +205,7 @@ export function CyberContent() {
                                 transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                                 className="text-xl md:text-2xl font-medium text-white/60 max-w-2xl leading-relaxed mx-auto lg:mx-0 mb-10"
                             >
-                                Advanced risk assessment, targeted payload mapping, and zero-day threat elimination designed for high-growth enterprises.
+                                <DecryptedText text="Advanced risk assessment, targeted payload mapping, and zero-day threat elimination designed for high-growth enterprises." speed={20} maxIterations={5} animateOn="view" />
                             </motion.p>
 
                             <motion.div
@@ -273,7 +275,8 @@ export function CyberContent() {
                             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                             className="text-5xl md:text-8xl font-black uppercase tracking-tighter text-black leading-none"
                         >
-                            Defense <br /> <span className="text-[#3b82f6] italic">Matrix.</span>
+                            <DecryptedText text="DEFENSE" speed={60} maxIterations={10} animateOn="view" className="block" />
+                            <span className="text-[#3b82f6] italic"><DecryptedText text="MATRIX." speed={60} maxIterations={10} animateOn="view" /></span>
                         </motion.h2>
                         <p className="text-xl font-bold uppercase tracking-widest text-black/40 hidden md:block">Core Services</p>
                     </div>

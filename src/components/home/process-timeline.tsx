@@ -149,8 +149,9 @@ export function ProcessTimeline() {
     }, [])
 
     useEffect(() => {
-        if (typeof window === "undefined" || isMobile === null || isMobile) return
+        if (typeof window === "undefined") return
 
+        // ── Remove isMobile short-circuit so both get GSAP ──
         const section = sectionRef.current
         const pin = pinRef.current
         const fill = fillRef.current
@@ -274,83 +275,33 @@ export function ProcessTimeline() {
         }, section) // ← scoped to this section only
 
         // This is the LAST GSAP section on the page.
-        // One deferred refresh ensures ALL 3 pin spacers (hero, services, timeline)
-        // are recalculated in correct page order after every component has mounted.
+        // One deferred refresh ensures ALL pin spacers are calculated correctly.
         const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 200)
 
         return () => {
             clearTimeout(refreshTimer)
+            ctx.revert() // Clean up only this section's GSAP instances — prevents overlapping hooks
         }
-    }, [isMobile])
-
-    if (isMobile === null) return null // Prevent hydration mismatch
-
-    if (isMobile) {
-        // ── NATIVE HORIZONTAL SCROLL FOR MOBILE ──
-        return (
-            <section className="relative bg-[#050505] py-24 overflow-hidden">
-                <div className="pl-6 pr-4 mb-10 w-full relative z-10">
-                    <span className="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase text-[#3b82f6] bg-[#3b82f6]/10 border border-[#3b82f6]/20 mb-4 shadow-sm">
-                        The Master Plan
-                    </span>
-                    <h2 className="text-[2.5rem] leading-[1.05] font-black tracking-tight text-white mb-4">
-                        Simple. Transparent.<br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6]">Effective.</span>
-                    </h2>
-                    <p className="text-sm text-white/50 font-medium mb-3">Swipe to see how we build your systems.</p>
-                    <div className="flex items-center gap-2 text-[#3b82f6] animate-pulse">
-                        <span className="text-[10px] uppercase font-black tracking-[0.2em]">← Swipe →</span>
-                    </div>
-                </div>
-
-                <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-6 pb-12 w-full no-scrollbar relative z-10">
-                    {steps.map((step) => (
-                        <div
-                            key={step.id}
-                            className="snap-center shrink-0 w-[85vw] relative bg-black/40 backdrop-blur-md rounded-[2rem] border border-white/5 p-8 flex flex-col justify-center overflow-hidden"
-                            style={{ boxShadow: "inset 0 0 40px rgba(139,92,246,0.05)" }}
-                        >
-                            {/* Ambient Glow inside card */}
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#3b82f6]/20 rounded-full blur-3xl" />
-
-                            <h3 className="text-[100px] font-black text-white/[0.03] absolute -top-8 -right-4 select-none pointer-events-none">
-                                {step.id}
-                            </h3>
-
-                            <h4 className="text-3xl font-black text-white mb-4 tracking-tight relative z-10">
-                                {step.title}
-                            </h4>
-
-                            <div className="h-1 w-16 bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6] mb-6 rounded-full relative z-10" />
-
-                            <p className="text-base text-white/70 font-medium leading-relaxed relative z-10">
-                                {step.subtitle}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </section>
-        )
-    }
+    }, [])
 
     return (
         <section ref={sectionRef} className="relative bg-[#050505]">
             {/* This div gets pinned by GSAP — no manual sticky or h-[xxxvh] needed */}
-            <div ref={pinRef} className="h-screen overflow-hidden flex items-center justify-center">
+            <div ref={pinRef} className="h-screen w-full overflow-hidden flex items-center justify-center">
 
                 {/* Immersive Background Ambience */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.08),transparent_70%)] pointer-events-none" />
                 <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)] pointer-events-none" />
 
-                <Container className="relative z-10 w-full h-full flex flex-row items-center border-l border-r border-white/5 bg-black/20 backdrop-blur-sm">
+                <Container className="relative z-10 w-full h-full flex flex-col md:flex-row items-center border-l border-r border-white/5 bg-black/20 backdrop-blur-sm">
 
-                    {/* LEFT SIDE: Dynamic Text Stage */}
-                    <div className="w-[75%] md:w-[60%] h-full flex flex-col justify-center pl-4 pr-2 sm:px-6 md:px-16 lg:px-24 relative z-20">
+                    {/* TEXT Stage */}
+                    <div className="w-full h-1/2 md:w-[60%] md:h-full flex flex-col justify-end md:justify-center px-6 md:px-16 lg:px-24 pb-8 md:pb-0 relative z-20">
 
                         {/* Initial Header — GSAP fades this out */}
                         <div
                             ref={titleRef}
-                            className="absolute left-4 right-2 sm:inset-x-6 md:inset-x-16 lg:inset-x-24 top-1/2 -translate-y-1/2 pointer-events-none"
+                            className="absolute left-6 right-6 md:inset-x-16 lg:inset-x-24 bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2 pointer-events-none"
                         >
                             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-black tracking-[0.2em] uppercase text-[#3b82f6] bg-[#3b82f6]/10 border border-[#3b82f6]/20 mb-4 md:mb-6 shadow-sm">
                                 The Master Plan
@@ -369,7 +320,7 @@ export function ProcessTimeline() {
                             <div
                                 key={step.id}
                                 ref={el => { stepsRef.current[i] = el }}
-                                className="absolute left-4 right-2 sm:inset-x-6 md:inset-x-16 lg:inset-x-24 top-1/2 -translate-y-1/2 pointer-events-none"
+                                className="absolute left-6 right-6 md:inset-x-16 lg:inset-x-24 bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2 pointer-events-none"
                             >
                                 <h3 className="text-5xl sm:text-8xl md:text-[160px] font-black text-white/[0.06] absolute -top-10 sm:-top-12 md:-top-24 -left-2 sm:-left-4 md:-left-8 -z-10 select-none pointer-events-none">
                                     {step.id}
@@ -386,11 +337,11 @@ export function ProcessTimeline() {
                     </div>
 
                     {/* RIGHT SIDE: The 3D Progress Track & Stickman */}
-                    <div className="flex w-[25%] md:w-[40%] h-full items-center justify-center relative border-l border-white/5">
+                    <div className="flex w-full h-[40%] md:w-[40%] md:h-full items-center justify-center relative border-t md:border-t-0 md:border-l border-white/5 pb-20 md:pb-0">
 
                         {/* Sci-Fi HUD Track Measurements */}
-                        <div className="absolute h-[60vh] md:h-[80vh] w-24 md:w-48 flex z-0 opacity-20 md:opacity-40">
-                            <div className="absolute inset-y-0 left-0 w-4 md:w-8 border-r md:border-r-2 border-dashed border-[#3b82f6]/40 flex flex-col justify-between py-2 translate-x-8 md:translate-x-0">
+                        <div className="absolute h-full md:h-[80vh] w-24 md:w-48 flex z-0 opacity-20 md:opacity-40 translate-x-[40%] md:translate-x-0">
+                            <div className="absolute inset-y-0 left-0 w-4 md:w-8 border-r md:border-r-2 border-dashed border-[#3b82f6]/40 flex flex-col justify-between py-2">
                                 {[...Array(20)].map((_, i) => (
                                     <div key={i} className={`h-px bg-[#3b82f6] ${i % 5 === 0 ? "w-4 md:w-6 ml-auto shadow-[0_0_5px_#3b82f6]" : "w-2 md:w-3 ml-auto opacity-50"}`} />
                                 ))}
@@ -398,10 +349,10 @@ export function ProcessTimeline() {
                         </div>
 
                         {/* Outer Glow Core Container */}
-                        <div className="relative w-8 md:w-12 h-[60vh] md:h-[80vh] flex justify-center z-10 transform scale-75 md:scale-100 origin-center">
+                        <div className="relative w-8 md:w-12 h-full md:h-[80vh] flex justify-center z-10 transform scale-75 md:scale-100 origin-center py-4 md:py-0">
 
                             {/* The Physical 3D Glass Tube */}
-                            <div className="absolute inset-y-0 w-4 md:w-6 rounded-full bg-[#0a0a0a] border-[1px] md:border-[1.5px] border-white/10 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] overflow-hidden flex justify-center z-10">
+                            <div className="absolute inset-y-4 md:inset-y-0 w-4 md:w-6 rounded-full bg-[#0a0a0a] border-[1px] md:border-[1.5px] border-white/10 shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] overflow-hidden flex justify-center z-10">
                                 {/* The Internal Rising Fluid Gradient */}
                                 <div
                                     ref={fillRef}
@@ -418,7 +369,7 @@ export function ProcessTimeline() {
                             </div>
 
                             {/* Node Connectors lighting up as the liquid passes */}
-                            <div className="absolute inset-y-0 w-full z-0">
+                            <div className="absolute inset-y-4 md:inset-y-0 w-full z-0">
                                 {steps.map((step, i) => {
                                     // Place nodes at 25%, 50%, 75%, 95% — last one slightly below top so stickman visually reaches it
                                     const nodePercent = i < steps.length - 1 ? ((i + 1) / steps.length) * 100 : 95

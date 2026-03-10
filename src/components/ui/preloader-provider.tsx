@@ -21,7 +21,9 @@ export function PreloaderProvider({ children }: { children: ReactNode }) {
 
     return (
         <>
-            {!loaded && <Preloader onComplete={handleComplete} />}
+            <div id="preloader-mount" className="relative z-[9999]">
+                {!loaded && <Preloader onComplete={handleComplete} />}
+            </div>
             {children}
         </>
     )

@@ -31,11 +31,19 @@ export async function POST(req: Request) {
             body: JSON.stringify(body),
         });
 
-        const data = await edgeRes.json();
+        const dataText = await edgeRes.text();
+        let data;
+        try {
+            data = JSON.parse(dataText);
+        } catch (e) {
+            console.error("Failed to parse edge response:", dataText, e);
+            data = { error: "Invalid JSON response from Edge Function" };
+        }
 
         if (!edgeRes.ok) {
+            console.error("Edge Function Error Details:", data);
             return NextResponse.json(
-                { error: data.error || 'Failed to submit contact form' },
+                { error: data.error || 'Failed to submit contact form. Internal system error.' },
                 { status: edgeRes.status }
             );
         }
@@ -47,7 +55,7 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error('Contact API error:', error)
         return NextResponse.json(
-            { error: 'Internal server error' },
+            { error: 'Internal server error while processing the request.' },
             { status: 500 }
         )
     }

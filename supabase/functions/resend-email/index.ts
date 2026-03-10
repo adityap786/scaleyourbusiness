@@ -77,6 +77,13 @@ serve(async (req) => {
     }
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    if (!RESEND_API_KEY) {
+      console.error("Missing RESEND_API_KEY environment variable");
+      return new Response(
+        JSON.stringify({ error: "Email service not configured." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
+    }
 
     // Common Style Variables
     const brandBlue = "#3b82f6";
@@ -272,7 +279,7 @@ serve(async (req) => {
     `;
 
     // Send Email to Admin (new lead)
-    await fetch("https://api.resend.com/emails", {
+    const adminRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + RESEND_API_KEY,
@@ -286,8 +293,17 @@ serve(async (req) => {
       })
     });
 
+    if (!adminRes.ok) {
+      const adminError = await adminRes.text();
+      console.error("Resend admin email failed:", adminRes.status, adminError);
+      return new Response(
+        JSON.stringify({ error: "Failed to send notification email.", details: adminError }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 502 }
+      );
+    }
+
     // Auto reply to User
-    await fetch("https://api.resend.com/emails", {
+    const userRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + RESEND_API_KEY,
@@ -300,6 +316,12 @@ serve(async (req) => {
         html: userHtml
       })
     });
+
+    if (!userRes.ok) {
+      const userError = await userRes.text();
+      console.error("Resend user email failed:", userRes.status, userError);
+      // Don't fail entirely — admin was notified. Log and continue.
+    }
 
     if (deviceData) {
       await supabase

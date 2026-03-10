@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Sans } from "next/font/google";
+import { Inter, DM_Sans, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/react";
@@ -10,11 +10,7 @@ import { PreloaderProvider } from "@/components/ui/preloader-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const dmSans = DM_Sans({
   variable: "--font-body",
@@ -117,7 +113,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" suppressHydrationWarning className={cn(inter.variable, dmSans.variable, "antialiased")}>
+    <html lang="en" suppressHydrationWarning className={cn( dmSans.variable, "antialiased", "font-sans", geist.variable)}>
       <head>
         <script
           type="application/ld+json"
