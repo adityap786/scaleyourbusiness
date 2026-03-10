@@ -227,7 +227,7 @@ export function Hero() {
             window.removeEventListener("resize", resizeCanvas)
             gsapCtx.revert() // Clean up only this section's GSAP instances
         }
-    }, [])
+    }, [isMobile])
 
     if (isMobile === null) return null // Prevent hydration mismatch
     if (isMobile) return <MobileHero />
