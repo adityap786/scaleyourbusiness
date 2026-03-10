@@ -41,18 +41,18 @@ export function TrustBuilder() {
 
     const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] })
 
-    // Smooth aggressive motion (disable parallax totally on mobile for clean flex stack)
-    const titleY = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "0%" : "80%"])
-    const titleOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, isMobile ? 1 : 0])
+    // Very subtle parallax for the text, completely disabled on mobile
+    const titleY = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "0%" : "20%"])
+    const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 1, 1, isMobile ? 1 : 0.5])
 
     return (
-        <section ref={sectionRef} className="relative bg-[#FAFAFA] min-h-0 md:min-h-[140vh] py-16 md:py-32 overflow-hidden flex flex-col items-center">
+        <section ref={sectionRef} className="relative bg-[#FAFAFA] min-h-0 md:min-h-[140vh] py-16 md:py-24 overflow-hidden flex flex-col items-center">
             {/* Ambient Background & Deep Blur */}
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-multiply" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E')" }} />
-            <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-blue-100/50 rounded-full blur-[140px] pointer-events-none -z-10" />
+            <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-blue-100/50 rounded-full blur-[140px] pointer-events-none -z-10" />
 
-            {/* Massive Parallax Background Typography */}
-            <div className="relative md:absolute inset-0 flex flex-col justify-center items-center pt-8 md:pt-[20vh] pointer-events-none z-20 md:z-0 px-4 md:px-0 mb-12 md:mb-0">
+            {/* Typography - Now statically placed sequentially at the top */}
+            <div className="relative w-full flex flex-col justify-start items-center pt-8 md:pt-0 pointer-events-none z-20 md:z-0 px-4 md:px-0 mb-12 md:mb-32">
                 <motion.div style={{ y: titleY, opacity: titleOpacity }} className="text-center">
                     <p className="text-[11px] sm:text-sm font-bold tracking-[0.4em] uppercase text-blue-600 mb-6 md:mb-8">
                         Who We Serve
@@ -64,7 +64,7 @@ export function TrustBuilder() {
                 </motion.div>
             </div>
 
-            <Container className="relative z-10 w-full max-w-7xl mt-0 md:mt-[40vh]">
+            <Container className="relative z-10 w-full max-w-7xl">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 relative pb-16 md:pb-64 px-4 md:px-0">
                     {clients.map((client, i) => {
                         const offset = cardOffsets[i % cardOffsets.length]
